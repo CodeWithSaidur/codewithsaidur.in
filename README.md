@@ -6,7 +6,7 @@ A full-stack portfolio website built with Next.js 16, React 19, TypeScript, Pris
 
 ### Public Features
 - View Profile (name, bio, avatar, social links)
-- View Skills with proficiency levels
+- View Skills organized by category
 - View Tech Stack & Tools organized by category
 - Browse Projects showcase
 - SEO optimized pages

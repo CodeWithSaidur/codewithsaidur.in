@@ -24,7 +24,6 @@ export async function PUT(
       {
         name: validatedData.name,
         category: validatedData.category,
-        level: validatedData.level,
         icon: validatedData.icon || null,
       },
       { new: true }

@@ -213,23 +213,15 @@ export default async function HomePage() {
                     <h3 className="mb-3 text-xl font-semibold sm:mb-4 sm:text-2xl">
                       {category}
                     </h3>
-                    <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                       {categorySkills.map((skill: any) => (
-                        <div key={skill.id} className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium sm:text-base">
-                              {skill.name}
-                            </span>
-                            <span className="text-xs text-gray-600 sm:text-sm">
-                              {skill.level}/5
-                            </span>
-                          </div>
-                          <div className="h-2 w-full rounded-full bg-gray-200">
-                            <div
-                              className="h-2 rounded-full bg-blue-600"
-                              style={{ width: `${(skill.level / 5) * 100}%` }}
-                            />
-                          </div>
+                        <div key={skill.id} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-50">
+                          {skill.icon && (
+                            <div className="flex h-6 w-6 items-center justify-center">
+                              <span className="text-xl">{skill.icon}</span>
+                            </div>
+                          )}
+                          <span className="font-medium text-gray-800">{skill.name}</span>
                         </div>
                       ))}
                     </div>

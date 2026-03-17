@@ -36,7 +36,6 @@ type Skill = {
   id: string
   name: string
   category: string
-  level: number
   icon: string | null
 }
 
@@ -56,12 +55,7 @@ export default function AdminSkillsPage() {
     formState: { errors },
   } = useForm<SkillInput>({
     resolver: zodResolver(skillSchema),
-    defaultValues: {
-      level: 1,
-    },
   })
-
-  const level = watch("level")
 
   useEffect(() => {
     fetchSkills()
@@ -123,7 +117,6 @@ export default function AdminSkillsPage() {
     reset({
       name: skill.name,
       category: skill.category,
-      level: skill.level,
       icon: skill.icon || "",
     })
     setIsDialogOpen(true)
@@ -209,29 +202,7 @@ export default function AdminSkillsPage() {
                   </p>
                 )}
               </div>
-              <div>
-                <Label htmlFor="level">Level *</Label>
-                <Select
-                  value={level?.toString()}
-                  onValueChange={(value) => setValue("level", parseInt(value))}
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Select level" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[1, 2, 3, 4, 5].map((lvl) => (
-                      <SelectItem key={lvl} value={lvl.toString()}>
-                        {lvl}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.level && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.level.message}
-                  </p>
-                )}
-              </div>
+
               <div>
                 <Label htmlFor="icon">Icon URL</Label>
                 <Input
@@ -269,7 +240,6 @@ export default function AdminSkillsPage() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Level</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -285,7 +255,6 @@ export default function AdminSkillsPage() {
                 <TableRow key={skill.id}>
                   <TableCell className="font-medium">{skill.name}</TableCell>
                   <TableCell>{skill.category}</TableCell>
-                  <TableCell>{skill.level}/5</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end space-x-2">
                       <Button

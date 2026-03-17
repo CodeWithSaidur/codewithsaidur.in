@@ -75,31 +75,23 @@ export default async function SkillsPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            {Object.entries(skillsByCategory).map(
-              ([category, categorySkills]) => (
-                <div key={category} className="rounded-lg border bg-white p-6">
-                  <h2 className="mb-4 text-2xl font-semibold">{category}</h2>
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {(categorySkills as typeof skills).map((skill: any) => (
-                      <div key={skill.id} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{skill.name}</span>
-                          <span className="text-sm text-gray-600">
-                            {skill.level}/5
-                          </span>
+            {Object.entries(skillsByCategory).map(([category, categorySkills]) => (
+              <div key={category} className="rounded-lg border bg-white p-6">
+                <h2 className="mb-4 text-2xl font-semibold">{category}</h2>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {(categorySkills as any[]).map((skill: any) => (
+                    <div key={skill.id} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-50">
+                      {skill.icon && (
+                        <div className="flex h-6 w-6 items-center justify-center">
+                          <span className="text-xl">{skill.icon}</span>
                         </div>
-                        <div className="h-2 w-full rounded-full bg-gray-200">
-                          <div
-                            className="h-2 rounded-full bg-blue-600"
-                            style={{ width: `${(skill.level / 5) * 100}%` }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      )}
+                      <span className="font-medium">{skill.name}</span>
+                    </div>
+                  ))}
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </div>
         )}
       </main>

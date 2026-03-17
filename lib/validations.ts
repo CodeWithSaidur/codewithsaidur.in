@@ -54,7 +54,6 @@ export const profileSchema = z.object({
 export const skillSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   category: z.string().min(1, 'Category is required'),
-  level: z.number().min(1).max(5),
   icon: z.string().optional().or(z.literal('')),
 })
 

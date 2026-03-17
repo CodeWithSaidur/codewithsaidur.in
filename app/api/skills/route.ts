@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
     const skill = await Skill.create({
       name: validatedData.name,
       category: validatedData.category,
-      level: validatedData.level,
       icon: validatedData.icon || null,
     })
 
