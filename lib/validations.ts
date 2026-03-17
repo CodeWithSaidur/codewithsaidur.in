@@ -73,8 +73,19 @@ export const projectSchema = z.object({
   featured: z.boolean(),
 })
 
+export const pricingSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  price: z.string().min(1, 'Price is required'),
+  description: z.string().min(1, 'Description is required'),
+  features: z.array(z.string()).min(1, 'At least one feature is required'),
+  cta: z.string().default('Work With Me'),
+  featured: z.boolean().default(false),
+  order: z.number().default(0),
+})
+
 export type LoginInput = z.infer<typeof loginSchema>
 export type ProfileInput = z.infer<typeof profileSchema>
 export type SkillInput = z.infer<typeof skillSchema>
 export type TechStackInput = z.infer<typeof techStackSchema>
 export type ProjectInput = z.infer<typeof projectSchema>
+export type PricingInput = z.infer<typeof pricingSchema>

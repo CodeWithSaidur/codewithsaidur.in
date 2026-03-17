@@ -7,6 +7,8 @@ import Skill from '@/models/Skill'
 import TechStack from '@/models/TechStack'
 import Image from 'next/image'
 import { Github, Twitter, Linkedin, Phone, MessageCircle } from 'lucide-react'
+import Footer from '@/components/Footer'
+import PricingSection from '@/components/PricingSection'
 
 export const metadata = {
   title: 'Portfolio | Home',
@@ -100,26 +102,33 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen">
       <main>
-        <section className="bg-gradient-to-b from-gray-50 to-white py-12 sm:py-16 md:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="relative overflow-hidden bg-white py-12 sm:py-16 md:py-20 lg:py-28">
+          {/* Background Gradient Decorations */}
+          <div className="absolute -top-[10%] -left-[10%] h-[50%] w-[50%] rounded-full bg-gradient-to-br from-blue-200/40 to-indigo-200/40 blur-3xl animate-blob" />
+          <div className="absolute -bottom-[10%] -right-[10%] h-[50%] w-[50%] rounded-full bg-gradient-to-tl from-purple-200/40 to-pink-200/40 blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-[20%] right-[10%] h-[40%] w-[40%] rounded-full bg-gradient-to-tr from-yellow-100/30 to-orange-100/30 blur-3xl animate-blob animation-delay-4000" />
+          
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center text-center">
               {profile?.avatar &&
                 typeof profile.avatar === 'string' &&
                 profile.avatar.trim() !== '' && (
-                  <div className="mb-6 sm:mb-8">
+                  <div className="relative mb-6 sm:mb-8">
+                    {/* Glow effect behind avatar */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 opacity-20 blur-2xl animate-pulse" />
                     <Image
                       src={profile.avatar}
                       alt={profile.name || 'Profile avatar'}
                       width={120}
                       height={120}
-                      className="rounded-full sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48"
+                      className="relative rounded-full border-4 border-white shadow-xl sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48"
                     />
                   </div>
                 )}
-              <h1 className="mb-3 text-3xl font-bold sm:mb-4 sm:text-4xl md:text-5xl">
+              <h1 className="mb-3 text-gray-900 text-3xl font-extrabold sm:mb-4 sm:text-4xl md:text-5xl lg:text-6xl tracking-tight">
                 {profile?.name || 'Full-Stack Developer'}
               </h1>
-              <p className="mb-6 max-w-2xl text-base text-gray-600 sm:mb-8 sm:text-lg md:text-xl">
+              <p className="mb-6 max-w-2xl text-base text-gray-600 sm:mb-8 sm:text-lg md:text-xl font-medium">
                 {profile?.bio ||
                   'Passionate developer building modern web applications'}
               </p>
@@ -129,7 +138,7 @@ export default async function HomePage() {
                     href={profile.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900 sm:text-base"
+                    className="flex items-center gap-2 rounded-full border border-gray-200 bg-white/50 px-4 py-2 text-sm text-gray-600 transition-all hover:border-blue-500 hover:text-blue-600 hover:shadow-md sm:text-base"
                     aria-label="GitHub">
                     <Github className="h-5 w-5" />
                     <span className="hidden sm:inline">GitHub</span>
@@ -140,7 +149,7 @@ export default async function HomePage() {
                     href={profile.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900 sm:text-base"
+                    className="flex items-center gap-2 rounded-full border border-gray-200 bg-white/50 px-4 py-2 text-sm text-gray-600 transition-all hover:border-blue-600 hover:text-blue-600 hover:shadow-md sm:text-base"
                     aria-label="LinkedIn">
                     <Linkedin className="h-5 w-5" />
                     <span className="hidden sm:inline">LinkedIn</span>
@@ -151,7 +160,7 @@ export default async function HomePage() {
                     href={profile.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900 sm:text-base"
+                    className="flex items-center gap-2 rounded-full border border-gray-200 bg-white/50 px-4 py-2 text-sm text-gray-600 transition-all hover:border-sky-400 hover:text-sky-500 hover:shadow-md sm:text-base"
                     aria-label="Twitter">
                     <Twitter className="h-5 w-5" />
                     <span className="hidden sm:inline">Twitter</span>
@@ -165,7 +174,7 @@ export default async function HomePage() {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900 sm:text-base"
+                    className="flex items-center gap-2 rounded-full border border-gray-200 bg-white/50 px-4 py-2 text-sm text-gray-600 transition-all hover:border-green-500 hover:text-green-600 hover:shadow-md sm:text-base"
                     aria-label="WhatsApp">
                     <MessageCircle className="h-5 w-5" />
                     <span className="hidden sm:inline">WhatsApp</span>
@@ -174,34 +183,111 @@ export default async function HomePage() {
                 {profile?.phone && (
                   <a
                     href={`tel:${profile.phone}`}
-                    className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900 sm:text-base"
+                    className="flex items-center gap-2 rounded-full border border-gray-200 bg-white/50 px-4 py-2 text-sm text-gray-600 transition-all hover:border-gray-900 hover:text-gray-900 hover:shadow-md sm:text-base"
                     aria-label="Phone">
                     <Phone className="h-5 w-5" />
                     <span className="hidden sm:inline">Phone</span>
-                  </a>
-                )}
-                {profile?.website && (
-                  <a
-                    href={profile.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900 sm:text-base"
-                    aria-label="Website">
-                    <span className="hidden sm:inline">Website</span>
                   </a>
                 )}
               </div>
             </div>
           </div>
         </section>
+        <PricingSection />
+
+
+        {projects.length > 0 && (
+          <section id="projects" className="relative overflow-hidden bg-white py-12 sm:py-16">
+            <div className="absolute top-1/2 left-0 h-[30%] w-[30%] -translate-y-1/2 rounded-full bg-blue-50/50 blur-3xl" />
+            
+            <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="mb-10 flex flex-col items-center justify-between gap-4 sm:flex-row">
+                <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                  Featured Projects
+                </h2>
+                <Link href="/projects">
+                  <Button variant="gradient" className="rounded-full">
+                    View All Projects
+                  </Button>
+                </Link>
+              </div>
+              
+              <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {projects.map((project: any) => (
+                  <div
+                    key={project.id}
+                    className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all hover:border-blue-100 hover:shadow-xl">
+                    {project.image &&
+                      typeof project.image === 'string' &&
+                      project.image.trim() !== '' && (
+                        <div className="relative h-48 w-full overflow-hidden sm:h-56">
+                          <Image
+                            src={project.image}
+                            alt={project.title || 'Project image'}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                        </div>
+                      )}
+                    <div className="flex flex-1 flex-col p-6">
+                      <div className="mb-3 flex items-start justify-between">
+                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                          {project.title}
+                        </h3>
+                        {project.featured && (
+                          <span className="inline-flex rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 px-2.5 py-0.5 text-xs font-bold text-white shadow-sm">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+                      <p className="mb-4 line-clamp-2 flex-1 text-sm text-gray-600">
+                        {project.description}
+                      </p>
+                      <div className="mb-4 flex flex-wrap gap-2">
+                        {project.techStack.map((tech: string, idx: number) => (
+                          <span
+                            key={idx}
+                            className="rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="mt-auto flex items-center gap-4">
+                        {project.githubUrl && (
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm font-semibold text-gray-900 transition-colors hover:text-blue-600">
+                            GitHub
+                          </a>
+                        )}
+                        {project.liveUrl && (
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700">
+                            Live Demo →
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {skills.length > 0 && (
-          <section id="skills" className="py-12 sm:py-16">
+          <section id="skills" className="bg-gray-50/50 py-12 sm:py-16">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h2 className="mb-6 text-center text-2xl font-bold sm:mb-8 sm:text-3xl">
-                Skills
+              <h2 className="mb-10 text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                Technical Expertise
               </h2>
-              <div className="space-y-6 sm:space-y-8">
+              <div className="grid gap-6 sm:gap-8">
                 {(
                   Object.entries(skillsByCategory) as Array<
                     [string, Array<(typeof skills)[number]>]
@@ -209,19 +295,22 @@ export default async function HomePage() {
                 ).map(([category, categorySkills]) => (
                   <div
                     key={category}
-                    className="rounded-lg border bg-white p-4 sm:p-6">
-                    <h3 className="mb-3 text-xl font-semibold sm:mb-4 sm:text-2xl">
-                      {category}
-                    </h3>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    className="group overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+                    <div className="mb-6 flex items-center justify-between">
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {category}
+                      </h3>
+                      <div className="h-1 w-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600" />
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                       {categorySkills.map((skill: any) => (
-                        <div key={skill.id} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-50">
+                        <div key={skill.id} className="group/skill relative flex items-center space-x-3 rounded-xl border border-gray-50 bg-gray-50/30 p-4 transition-all hover:border-blue-100 hover:bg-white hover:shadow-sm">
                           {skill.icon && (
-                            <div className="flex h-6 w-6 items-center justify-center">
-                              <span className="text-xl">{skill.icon}</span>
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-gray-100 group-hover/skill:ring-blue-100">
+                              <span className="text-2xl">{skill.icon}</span>
                             </div>
                           )}
-                          <span className="font-medium text-gray-800">{skill.name}</span>
+                          <span className="font-semibold text-gray-700 group-hover/skill:text-blue-600">{skill.name}</span>
                         </div>
                       ))}
                     </div>
@@ -232,87 +321,14 @@ export default async function HomePage() {
           </section>
         )}
 
-        {projects.length > 0 && (
-          <section id="projects" className="bg-gray-50 py-12 sm:py-16">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h2 className="mb-6 text-center text-2xl font-bold sm:mb-8 sm:text-3xl">
-                Projects
-              </h2>
-              <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {projects.map((project: any) => (
-                  <div
-                    key={project.id}
-                    className="overflow-hidden rounded-lg border bg-white shadow-md transition-shadow hover:shadow-lg">
-                    {project.image &&
-                      typeof project.image === 'string' &&
-                      project.image.trim() !== '' && (
-                        <div className="relative h-40 w-full sm:h-48">
-                          <Image
-                            src={project.image}
-                            alt={project.title || 'Project image'}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      )}
-                    <div className="p-4 sm:p-6">
-                      <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <h3 className="text-lg font-semibold sm:text-xl">
-                          {project.title}
-                        </h3>
-                        {project.featured && (
-                          <span className="w-fit rounded bg-yellow-100 px-2 py-1 text-xs text-yellow-800">
-                            Featured
-                          </span>
-                        )}
-                      </div>
-                      <p className="mb-3 text-sm text-gray-600 sm:mb-4 sm:text-base">
-                        {project.description}
-                      </p>
-                      <div className="mb-3 flex flex-wrap gap-2 sm:mb-4">
-                        {project.techStack.map((tech: string, idx: number) => (
-                          <span
-                            key={idx}
-                            className="rounded bg-gray-100 px-2 py-1 text-xs">
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="flex flex-wrap gap-3 sm:gap-2">
-                        {project.githubUrl && (
-                          <a
-                            href={project.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-blue-600 transition-colors hover:underline sm:text-sm">
-                            GitHub
-                          </a>
-                        )}
-                        {project.liveUrl && (
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-blue-600 transition-colors hover:underline sm:text-sm">
-                            Live Demo
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
 
         {techStack.length > 0 && (
-          <section id="tech-stack" className="py-12 sm:py-16">
+          <section id="tech-stack" className="bg-gray-50/50 py-12 sm:py-16">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h2 className="mb-6 text-center text-2xl font-bold sm:mb-8 sm:text-3xl">
-                Tech Stack & Tools
+              <h2 className="mb-10 text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                Tech Stack
               </h2>
-              <div className="space-y-6 sm:space-y-8">
+              <div className="grid gap-6 sm:gap-8">
                 {(
                   Object.entries(techByCategory) as Array<
                     [string, Array<(typeof techStack)[number]>]
@@ -320,23 +336,25 @@ export default async function HomePage() {
                 ).map(([category, categoryTech]) => (
                   <div
                     key={category}
-                    className="rounded-lg border bg-white p-4 sm:p-6">
-                    <h3 className="mb-3 text-xl font-semibold sm:mb-4 sm:text-2xl">
+                    className="overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                    <h3 className="mb-6 text-xl font-bold text-gray-900">
                       {category}
                     </h3>
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                       {categoryTech.map((tech: any) => (
                         <div
                           key={tech.id}
-                          className="flex items-center space-x-2 rounded-lg border p-2 sm:space-x-3 sm:p-3">
+                          className="group/tech flex flex-col items-center space-y-2 rounded-xl border border-transparent p-4 transition-all hover:bg-gray-50 hover:shadow-sm">
                           {tech.icon && (
-                            <img
-                              src={tech.icon}
-                              alt={tech.name}
-                              className="h-6 w-6 flex-shrink-0 sm:h-8 sm:w-8"
-                            />
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white p-2 shadow-sm ring-1 ring-gray-100 transition-transform group-hover/tech:scale-110">
+                              <img
+                                src={tech.icon}
+                                alt={tech.name}
+                                className="h-full w-full object-contain"
+                              />
+                            </div>
                           )}
-                          <span className="text-sm font-medium sm:text-base">
+                          <span className="text-sm font-semibold text-gray-700">
                             {tech.name}
                           </span>
                         </div>
@@ -349,8 +367,7 @@ export default async function HomePage() {
           </section>
         )}
       </main>
-
-
+      <Footer name={profile?.name} />
     </div>
   )
 }

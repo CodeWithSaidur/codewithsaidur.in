@@ -123,14 +123,23 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="rounded-lg border bg-gradient-to-r from-blue-50 to-indigo-50 p-6">
-        <h1 className="mb-2 text-3xl font-bold">Admin Dashboard</h1>
-        <p className="text-gray-700">
-          {stats.profile.exists && stats.profile.name
-            ? `Welcome back, ${stats.profile.name}! Manage your portfolio information below.`
-            : "Welcome! Start by setting up your profile, then add your projects, skills, and tech stack."}
-        </p>
+    <div className="space-y-10">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 p-8 text-white shadow-xl lg:p-12">
+        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl" />
+        
+        <div className="relative">
+          <h1 className="mb-4 text-3xl font-extrabold lg:text-5xl">
+            {stats.profile.exists && stats.profile.name
+              ? `Welcome back, ${stats.profile.name.split(' ')[0]}!`
+              : "Welcome to your Command Center!"}
+          </h1>
+          <p className="max-w-2xl text-lg font-medium text-blue-50/90">
+            {stats.profile.exists
+              ? "Your professional presence is looking great. Use the tools below to keep your portfolio up to date and impactful."
+              : "Let's build your professional legacy. Start by setting up your profile and showcasing your best work."}
+          </p>
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -141,26 +150,24 @@ export default function AdminDashboardPage() {
             <Link
               key={card.title}
               href={card.href}
-              className="group rounded-lg border bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+              className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:border-blue-100 hover:shadow-xl hover:-translate-y-1"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-600">{card.title}</p>
-                  <div className="mt-2 flex items-baseline gap-2">
-                    <p className="text-2xl font-bold">{card.value}</p>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-bold uppercase tracking-wider text-gray-400">{card.title}</p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-3xl font-extrabold text-gray-900">{card.value}</span>
                     {card.status !== undefined && (
                       card.status ? (
                         <CheckCircle2 className="h-5 w-5 text-green-500" />
                       ) : (
-                        <XCircle className="h-5 w-5 text-red-500" />
+                        <XCircle className="h-5 w-5 text-red-400" />
                       )
                     )}
                   </div>
-                  <p className="mt-1 text-xs text-gray-500">{card.description}</p>
+                  <p className="mt-1 text-xs font-semibold text-gray-500">{card.description}</p>
                 </div>
-                <div
-                  className={`${card.color} rounded-lg p-3 text-white transition-transform group-hover:scale-110`}
-                >
+                <div className={`${card.color} flex h-12 w-12 items-center justify-center rounded-xl text-white shadow-lg transition-transform group-hover:rotate-12`}>
                   <Icon className="h-6 w-6" />
                 </div>
               </div>
@@ -169,111 +176,124 @@ export default function AdminDashboardPage() {
         })}
       </div>
 
-      {/* Quick Actions */}
-      <div className="rounded-lg border bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-xl font-semibold">Quick Actions</h2>
-        <p className="mb-4 text-sm text-gray-600">
-          Quickly add new content or edit existing information
-        </p>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {quickActions.map((action) => {
-            const Icon = action.icon
-            return (
-              <Link key={action.label} href={action.href}>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start gap-2 transition-all hover:bg-gray-50 hover:shadow-sm"
-                >
-                  <Icon className="h-4 w-4" />
-                  {action.label}
-                </Button>
-              </Link>
-            )
-          })}
-        </div>
-      </div>
+      {/* Quick Actions & Overview */}
+      <div className="grid gap-8 lg:grid-cols-3">
+        <div className="lg:col-span-2 space-y-8">
+          <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
+            <h2 className="mb-6 text-2xl font-bold text-gray-900 italic">Quick Actions</h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {quickActions.map((action) => {
+                const Icon = action.icon
+                return (
+                  <Link key={action.label} href={action.href}>
+                    <Button
+                      variant="outline"
+                      className="h-14 w-full justify-center gap-3 rounded-2xl border-gray-100 font-bold transition-all hover:border-blue-200 hover:bg-blue-50/30 hover:text-blue-600"
+                    >
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 transition-colors group-hover:bg-blue-100">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      {action.label}
+                    </Button>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
 
-      {/* Management Sections */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-lg border bg-white p-6 shadow-sm">
-          <h2 className="mb-2 text-xl font-semibold">Manage Your Information</h2>
-          <p className="mb-4 text-sm text-gray-600">
-            Click on any section to view, create, edit, or delete content
-          </p>
-          <div className="space-y-3">
-            <Link href="/admin/profile">
-              <div className="flex items-center justify-between rounded-md border p-3 hover:bg-gray-50">
-                <div className="flex items-center gap-3">
-                  <User className="h-5 w-5 text-gray-600" />
-                  <span className="font-medium">Profile</span>
+          <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
+            <h2 className="mb-6 text-2xl font-bold text-gray-900">Manage Content</h2>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Link href="/admin/profile" className="group rounded-2xl border border-gray-50 bg-gray-50/30 p-4 transition-all hover:border-blue-100 hover:bg-white hover:shadow-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-gray-100">
+                      <User className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <span className="block font-bold text-gray-900">Personal Info</span>
+                      <span className="text-xs font-medium text-gray-500">{stats.profile.exists ? "Configured" : "Needs setup"}</span>
+                    </div>
+                  </div>
+                  <Plus className="h-5 w-5 text-gray-300 transition-colors group-hover:text-blue-500" />
                 </div>
-                <span className="text-sm text-gray-500">
-                  {stats.profile.exists ? "Edit" : "Create"}
-                </span>
-              </div>
-            </Link>
-            <Link href="/admin/projects">
-              <div className="flex items-center justify-between rounded-md border p-3 hover:bg-gray-50">
-                <div className="flex items-center gap-3">
-                  <Briefcase className="h-5 w-5 text-gray-600" />
-                  <span className="font-medium">Projects</span>
+              </Link>
+              <Link href="/admin/projects" className="group rounded-2xl border border-gray-50 bg-gray-50/30 p-4 transition-all hover:border-green-100 hover:bg-white hover:shadow-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-gray-100">
+                      <Briefcase className="h-6 w-6 text-green-600" />
+                    </div>
+                    <div>
+                      <span className="block font-bold text-gray-900">Projects</span>
+                      <span className="text-xs font-medium text-gray-500">{stats.projects} Items</span>
+                    </div>
+                  </div>
+                  <Plus className="h-5 w-5 text-gray-300 transition-colors group-hover:text-green-500" />
                 </div>
-                <span className="text-sm text-gray-500">
-                  {stats.projects} items
-                </span>
-              </div>
-            </Link>
-            <Link href="/admin/skills">
-              <div className="flex items-center justify-between rounded-md border p-3 hover:bg-gray-50">
-                <div className="flex items-center gap-3">
-                  <Code className="h-5 w-5 text-gray-600" />
-                  <span className="font-medium">Skills</span>
+              </Link>
+              <Link href="/admin/skills" className="group rounded-2xl border border-gray-50 bg-gray-50/30 p-4 transition-all hover:border-purple-100 hover:bg-white hover:shadow-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-gray-100">
+                      <Code className="h-6 w-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <span className="block font-bold text-gray-900">Skills</span>
+                      <span className="text-xs font-medium text-gray-500">{stats.skills} Items</span>
+                    </div>
+                  </div>
+                  <Plus className="h-5 w-5 text-gray-300 transition-colors group-hover:text-purple-500" />
                 </div>
-                <span className="text-sm text-gray-500">
-                  {stats.skills} items
-                </span>
-              </div>
-            </Link>
-            <Link href="/admin/tech-stack">
-              <div className="flex items-center justify-between rounded-md border p-3 hover:bg-gray-50">
-                <div className="flex items-center gap-3">
-                  <Layers className="h-5 w-5 text-gray-600" />
-                  <span className="font-medium">Tech Stack</span>
+              </Link>
+              <Link href="/admin/tech-stack" className="group rounded-2xl border border-gray-50 bg-gray-50/30 p-4 transition-all hover:border-orange-100 hover:bg-white hover:shadow-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-gray-100">
+                      <Layers className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <span className="block font-bold text-gray-900">Tech Stack</span>
+                      <span className="text-xs font-medium text-gray-500">{stats.techStack} Items</span>
+                    </div>
+                  </div>
+                  <Plus className="h-5 w-5 text-gray-300 transition-colors group-hover:text-orange-500" />
                 </div>
-                <span className="text-sm text-gray-500">
-                  {stats.techStack} items
-                </span>
-              </div>
-            </Link>
+              </Link>
+            </div>
           </div>
         </div>
 
-        <div className="rounded-lg border bg-white p-6 shadow-sm">
-          <h2 className="mb-4 text-xl font-semibold">Overview</h2>
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm text-gray-600">Total Content Items</p>
-              <p className="text-2xl font-bold">
+        <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
+          <h2 className="mb-6 text-2xl font-bold text-gray-900">Performance Snapshot</h2>
+          <div className="space-y-6">
+            <div className="relative overflow-hidden rounded-2xl bg-gray-50 p-6">
+              <div className="absolute top-0 right-0 h-1 w-full bg-gradient-to-r from-blue-500 to-indigo-600" />
+              <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Total Visibility</p>
+              <p className="text-4xl font-extrabold text-indigo-900">
                 {stats.projects + stats.skills + stats.techStack}
               </p>
+              <p className="text-xs font-semibold text-gray-400 mt-1">Total active entries</p>
             </div>
-            <div>
-              <p className="text-sm text-gray-600">Featured Projects</p>
-              <p className="text-2xl font-bold">{stats.featuredProjects}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Profile Status</p>
-              <p className="text-lg font-semibold">
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between px-2">
+                <span className="text-sm font-bold text-gray-600">Featured Work</span>
+                <span className="text-sm font-extrabold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">{stats.featuredProjects}</span>
+              </div>
+              <div className="flex items-center justify-between px-2">
+                <span className="text-sm font-bold text-gray-600">Profile Health</span>
                 {stats.profile.exists ? (
-                  <span className="text-green-600">✓ Configured</span>
+                  <span className="text-xs font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full uppercase">Optimal</span>
                 ) : (
-                  <span className="text-red-600">✗ Not Set</span>
+                  <span className="text-xs font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full uppercase">Action Required</span>
                 )}
-              </p>
+              </div>
             </div>
-            <Link href="/">
-              <Button variant="outline" className="w-full">
-                View Public Site
+
+            <Link href="/" target="_blank">
+              <Button variant="gradient" className="w-full h-14 rounded-2xl text-lg font-bold shadow-indigo-200">
+                Live Site View
               </Button>
             </Link>
           </div>

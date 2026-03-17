@@ -2,10 +2,11 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import connectDB from '@/lib/mongoose'
 import Skill from '@/models/Skill'
+import Footer from '@/components/Footer'
 
 export const metadata = {
-  title: 'Skills | Portfolio',
-  description: 'My technical skills and expertise'
+  title: 'Skills & Expertise | Portfolio',
+  description: 'Technical skills and areas of expertise'
 }
 
 // Force dynamic rendering to prevent build-time database connection issues
@@ -42,51 +43,35 @@ export default async function SkillsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="border-b bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="text-xl font-bold">
-              Portfolio
-            </Link>
-            <div className="flex items-center space-x-4">
-              <Link href="/projects">
-                <Button variant="ghost">Projects</Button>
-              </Link>
-              <Link href="/skills">
-                <Button variant="ghost">Skills</Button>
-              </Link>
-              <Link href="/tech-stack">
-                <Button variant="ghost">Tech Stack</Button>
-              </Link>
-              <Link href="/admin/login">
-                <Button>Admin Login</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-white">
+      <main className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="absolute top-0 right-0 -z-10 h-64 w-64 rounded-full bg-purple-50/50 blur-3xl" />
+        
+        <h1 className="mb-10 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent bg-gradient-to-r from-gray-900 via-purple-800 to-indigo-900 sm:text-5xl">
+          Technical Expertise
+        </h1>
 
-      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <h1 className="mb-8 text-4xl font-bold">Skills</h1>
         {skills.length === 0 ? (
-          <div className="rounded-lg border bg-white p-12 text-center">
-            <p className="text-gray-600">No skills available yet.</p>
+          <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-12 text-center shadow-sm">
+            <p className="text-lg text-gray-500">No skills available yet.</p>
           </div>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-12">
             {Object.entries(skillsByCategory).map(([category, categorySkills]) => (
-              <div key={category} className="rounded-lg border bg-white p-6">
-                <h2 className="mb-4 text-2xl font-semibold">{category}</h2>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div key={category} className="group overflow-hidden rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
+                <div className="mb-8 flex items-center justify-between">
+                  <h2 className="text-2xl font-bold text-gray-900">{category}</h2>
+                  <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600" />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {(categorySkills as any[]).map((skill: any) => (
-                    <div key={skill.id} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-50">
+                    <div key={skill.id} className="group/skill relative flex items-center space-x-4 rounded-xl border border-gray-50 bg-gray-50/30 p-5 transition-all hover:border-purple-100 hover:bg-white hover:shadow-sm">
                       {skill.icon && (
-                        <div className="flex h-6 w-6 items-center justify-center">
-                          <span className="text-xl">{skill.icon}</span>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-gray-100 group-hover/skill:ring-purple-100">
+                          <span className="text-2xl">{skill.icon}</span>
                         </div>
                       )}
-                      <span className="font-medium">{skill.name}</span>
+                      <span className="font-bold text-gray-700 group-hover/skill:text-purple-600">{skill.name}</span>
                     </div>
                   ))}
                 </div>
@@ -95,6 +80,7 @@ export default async function SkillsPage() {
           </div>
         )}
       </main>
+      <Footer />
     </div>
   )
 }

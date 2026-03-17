@@ -189,101 +189,111 @@ export default function AdminProjectsPage() {
   }
 
   return (
-    <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Projects</h1>
+    <div className="space-y-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="bg-clip-text text-3xl font-extrabold text-transparent bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900">
+            Portfolio Projects
+          </h1>
+          <p className="text-sm font-medium text-gray-500">Manage and showcase your professional work</p>
+        </div>
         <Dialog open={isDialogOpen} onOpenChange={(open) => {
           setIsDialogOpen(open)
           if (!open) handleDialogClose()
         }}>
           <DialogTrigger asChild>
-            <Button>
+            <Button variant="gradient" className="rounded-xl shadow-lg shadow-blue-100">
               <Plus className="mr-2 h-4 w-4" />
-              Add Project
+              Add New Project
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl rounded-3xl border-gray-100 shadow-2xl">
             <DialogHeader>
-              <DialogTitle>
-                {editingProject ? "Edit Project" : "Add New Project"}
+              <DialogTitle className="text-2xl font-bold text-gray-900">
+                {editingProject ? "Edit Project Details" : "Create New Showcase"}
               </DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <Label htmlFor="title">Title *</Label>
-                <Input id="title" {...register("title")} className="mt-1" />
-                {errors.title && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.title.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="description">Description *</Label>
-                <Textarea
-                  id="description"
-                  {...register("description")}
-                  className="mt-1"
-                  rows={4}
-                />
-                {errors.description && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.description.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="image">Image URL</Label>
-                <Input
-                  id="image"
-                  type="url"
-                  {...register("image")}
-                  className="mt-1"
-                />
-                {errors.image && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.image.message}
-                  </p>
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="githubUrl">GitHub URL</Label>
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-4 md:col-span-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="title" className="text-sm font-bold text-gray-700">Project Title</Label>
+                    <Input id="title" {...register("title")} className="h-11 rounded-xl border-gray-200 focus:ring-blue-500" placeholder="e.g., E-commerce Dashboard" />
+                    {errors.title && (
+                      <p className="text-xs font-bold text-red-500">{errors.title.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="description" className="text-sm font-bold text-gray-700">Detailed Description</Label>
+                    <Textarea
+                      id="description"
+                      {...register("description")}
+                      className="rounded-2xl border-gray-200 focus:ring-blue-500 min-h-[120px]"
+                      placeholder="Describe the problem, solution, and your impact..."
+                    />
+                    {errors.description && (
+                      <p className="text-xs font-bold text-red-500">{errors.description.message}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="image" className="text-sm font-bold text-gray-700">Display Image URL</Label>
+                  <Input
+                    id="image"
+                    type="url"
+                    {...register("image")}
+                    className="h-11 rounded-xl border-gray-200"
+                    placeholder="https://..."
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="githubUrl" className="text-sm font-bold text-gray-700">GitHub Repository</Label>
                   <Input
                     id="githubUrl"
                     type="url"
                     {...register("githubUrl")}
-                    className="mt-1"
+                    className="h-11 rounded-xl border-gray-200"
                   />
-                  {errors.githubUrl && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.githubUrl.message}
-                    </p>
-                  )}
                 </div>
-                <div>
-                  <Label htmlFor="liveUrl">Live URL</Label>
+
+                <div className="space-y-2">
+                  <Label htmlFor="liveUrl" className="text-sm font-bold text-gray-700">Live Production Link</Label>
                   <Input
                     id="liveUrl"
                     type="url"
                     {...register("liveUrl")}
-                    className="mt-1"
+                    className="h-11 rounded-xl border-gray-200"
                   />
-                  {errors.liveUrl && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.liveUrl.message}
-                    </p>
-                  )}
+                </div>
+
+                <div className="space-y-2 pt-6">
+                  <div className="flex items-center space-x-3 rounded-2xl border border-gray-100 bg-gray-50/50 p-4">
+                    <Checkbox
+                      id="featured"
+                      checked={featured}
+                      onCheckedChange={(checked: boolean) =>
+                        setValue("featured", checked)
+                      }
+                      className="h-5 w-5 border-gray-300 data-[state=checked]:bg-blue-600"
+                    />
+                    <Label htmlFor="featured" className="cursor-pointer text-sm font-bold text-gray-700">
+                      Promote as Featured Project
+                    </Label>
+                  </div>
                 </div>
               </div>
-              <div>
-                <Label htmlFor="techStack">Tech Stack</Label>
-                <div className="mt-1 flex gap-2">
+
+              <div className="space-y-4">
+                <Label className="text-sm font-bold text-gray-700">Core Technologies</Label>
+                <div className="flex gap-2">
                   <Input
                     id="techStack"
                     value={techStackInput}
                     onChange={(e) => setTechStackInput(e.target.value)}
-                    placeholder="React, Node.js, PostgreSQL"
+                    placeholder="React, Tailwind, Node.js..."
+                    className="h-11 rounded-xl border-gray-200"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault()
@@ -291,22 +301,22 @@ export default function AdminProjectsPage() {
                       }
                     }}
                   />
-                  <Button type="button" onClick={handleAddTechStack}>
+                  <Button type="button" onClick={handleAddTechStack} className="h-11 rounded-xl bg-gray-900">
                     Add
                   </Button>
                 </div>
                 {techStack.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 pt-1">
                     {techStack.map((tech, index) => (
                       <span
                         key={index}
-                        className="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-sm"
+                        className="group/tag inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50/50 px-3 py-1.5 text-xs font-bold text-blue-700 transition-all hover:bg-blue-100"
                       >
                         {tech}
                         <button
                           type="button"
                           onClick={() => handleRemoveTechStack(index)}
-                          className="text-red-600 hover:text-red-800"
+                          className="text-blue-400 hover:text-red-500"
                         >
                           ×
                         </button>
@@ -314,34 +324,19 @@ export default function AdminProjectsPage() {
                     ))}
                   </div>
                 )}
-                {errors.techStack && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.techStack.message}
-                  </p>
-                )}
               </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="featured"
-                  checked={featured}
-                  onCheckedChange={(checked: boolean) =>
-                    setValue("featured", checked)
-                  }
-                />
-                <Label htmlFor="featured" className="cursor-pointer">
-                  Featured Project
-                </Label>
-              </div>
-              <div className="flex justify-end space-x-2">
+
+              <div className="flex justify-end gap-3 pt-6">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={handleDialogClose}
+                  className="h-11 rounded-xl border-gray-200 px-6 font-bold"
                 >
-                  Cancel
+                  Discard
                 </Button>
-                <Button type="submit">
-                  {editingProject ? "Update" : "Create"}
+                <Button type="submit" variant="gradient" className="h-11 rounded-xl px-8 font-bold shadow-lg shadow-blue-100">
+                  {editingProject ? "Update Changes" : "Create Project"}
                 </Button>
               </div>
             </form>
@@ -349,59 +344,74 @@ export default function AdminProjectsPage() {
         </Dialog>
       </div>
 
-      <div className="rounded-lg border bg-white">
+      <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-xl shadow-gray-100/50">
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Tech Stack</TableHead>
-              <TableHead>Featured</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+          <TableHeader className="bg-gray-50/50">
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="py-5 font-bold text-gray-900">Project Details</TableHead>
+              <TableHead className="font-bold text-gray-900">Technologies</TableHead>
+              <TableHead className="font-bold text-gray-900">Visibility</TableHead>
+              <TableHead className="text-right font-bold text-gray-900">Management</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {projects.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-gray-500">
-                  No projects found. Add your first project!
+                <TableCell colSpan={4} className="py-20 text-center">
+                  <div className="flex flex-col items-center gap-2">
+                    <p className="text-lg font-bold text-gray-400">No projects found</p>
+                    <p className="text-sm text-gray-500">Add your first project to get started!</p>
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (
               projects.map((project) => (
-                <TableRow key={project.id}>
-                  <TableCell className="font-medium">
-                    {project.title}
+                <TableRow key={project.id} className="group transition-colors hover:bg-blue-50/20">
+                  <TableCell className="py-4 font-bold text-gray-900">
+                    <div className="flex items-center gap-3">
+                      {project.image && (
+                        <div className="h-10 w-10 overflow-hidden rounded-lg bg-gray-100 border border-gray-100">
+                          <img src={project.image} alt="" className="h-full w-full object-cover" />
+                        </div>
+                      )}
+                      {project.title}
+                    </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1.5">
                       {project.techStack.slice(0, 3).map((tech, idx) => (
                         <span
                           key={idx}
-                          className="rounded bg-gray-100 px-2 py-1 text-xs"
+                          className="rounded-lg border border-gray-100 bg-white px-2 py-1 text-[10px] font-extrabold uppercase tracking-tight text-gray-500"
                         >
                           {tech}
                         </span>
                       ))}
                       {project.techStack.length > 3 && (
-                        <span className="text-xs text-gray-500">
-                          +{project.techStack.length - 3}
+                        <span className="text-[10px] font-bold text-gray-400">
+                          +{project.techStack.length - 3} more
                         </span>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
                     {project.featured ? (
-                      <span className="text-green-600">Yes</span>
+                      <span className="inline-flex rounded-full bg-yellow-100 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-yellow-700 shadow-sm ring-1 ring-inset ring-yellow-200/50">
+                        Featured
+                      </span>
                     ) : (
-                      <span className="text-gray-400">No</span>
+                      <span className="inline-flex rounded-full bg-gray-100 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-gray-400">
+                        Draft
+                      </span>
                     )}
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end space-x-2">
+                    <div className="flex justify-end gap-2 opacity-50 transition-opacity group-hover:opacity-100">
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(project)}
+                        className="h-9 w-9 rounded-lg hover:bg-white hover:text-blue-600 hover:shadow-sm"
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -409,8 +419,9 @@ export default function AdminProjectsPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDelete(project.id)}
+                        className="h-9 w-9 rounded-lg hover:bg-white hover:text-red-500 hover:shadow-sm"
                       >
-                        <Trash2 className="h-4 w-4 text-red-600" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </TableCell>
