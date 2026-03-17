@@ -1,13 +1,14 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { db } from '@/lib/db'
+import connectDB from '@/lib/mongoose'
+import Skill from '@/models/Skill'
 
 export const metadata = {
   title: 'Skills | Portfolio',
   description: 'My technical skills and expertise'
 }
 
-// Force dynamic rendering
+// Force dynamic rendering to prevent build-time database connection issues
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 export const fetchCache = 'force-no-store'
@@ -17,8 +18,12 @@ export default async function SkillsPage() {
   let skillsByCategory: Record<string, typeof skills> = {}
 
   try {
-    const skillsData = await db.skills.findSorted({ createdAt: -1 })
-    skills = skillsData
+    await connectDB()
+    const skillsData = await Skill.find().sort({ createdAt: -1 }).lean()
+    skills = skillsData.map((s: any) => ({
+      ...s,
+      id: s._id.toString()
+    }))
 
     skillsByCategory = skills.reduce((acc, skill) => {
       if (!acc[skill.category]) {
@@ -28,7 +33,12 @@ export default async function SkillsPage() {
       return acc
     }, {} as Record<string, typeof skills>)
   } catch (error: any) {
-    console.error('Error fetching skills:', error)
+    // During build, if database connection is skipped, just continue with empty data
+    if (error?.skipBuild) {
+      console.log('Database connection skipped during build')
+    } else {
+      console.error('Error fetching skills:', error)
+    }
   }
 
   return (

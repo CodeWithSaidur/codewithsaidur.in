@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
+import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
 import { projectSchema } from '@/lib/validations'
-import { db } from '@/lib/db'
+import Project from '@/models/Project'
 
 export async function GET() {
   try {
-    const projects = await db.projects.findSorted({ createdAt: -1 })
-    return NextResponse.json(projects)
+    await connectDB()
+    const projects = await Project.find().sort({ createdAt: -1 })
+    return NextResponse.json(JSON.parse(JSON.stringify(projects)))
   } catch (error) {
-    console.error('Projects GET error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -23,10 +24,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    await connectDB()
     const body = await request.json()
     const validatedData = projectSchema.parse(body)
 
-    const project = await db.projects.create({
+    const project = await Project.create({
       title: validatedData.title,
       description: validatedData.description,
       image: validatedData.image || null,
@@ -36,7 +38,7 @@ export async function POST(request: NextRequest) {
       featured: validatedData.featured,
     })
 
-    return NextResponse.json(project)
+    return NextResponse.json(JSON.parse(JSON.stringify(project)))
   } catch (error) {
     if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
@@ -44,7 +46,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-    console.error('Projects POST error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

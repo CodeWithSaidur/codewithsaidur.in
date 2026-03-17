@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
 import { projectSchema } from '@/lib/validations'
-import { db } from '@/lib/db'
+import Project from '@/models/Project'
 
 export async function PUT(
   request: NextRequest,
@@ -13,11 +14,12 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    await connectDB()
     const { id } = await params
     const body = await request.json()
     const validatedData = projectSchema.parse(body)
 
-    const project = await db.projects.findByIdAndUpdate(
+    const project = await Project.findByIdAndUpdate(
       id,
       {
         title: validatedData.title,
@@ -27,14 +29,15 @@ export async function PUT(
         liveUrl: validatedData.liveUrl || null,
         techStack: validatedData.techStack,
         featured: validatedData.featured,
-      }
+      },
+      { new: true }
     )
 
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
-    return NextResponse.json(project)
+    return NextResponse.json(JSON.parse(JSON.stringify(project)))
   } catch (error) {
     if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
@@ -42,7 +45,6 @@ export async function PUT(
         { status: 400 }
       )
     }
-    console.error('Project PUT error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -60,12 +62,12 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    await connectDB()
     const { id } = await params
-    await db.projects.findByIdAndDelete(id)
+    await Project.findByIdAndDelete(id)
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Project DELETE error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

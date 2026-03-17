@@ -1,6 +1,6 @@
 # Portfolio Website
 
-A full-stack portfolio website built with Next.js 16, React 19, TypeScript, and JSON File Storage. Features a public portfolio showcase and an admin dashboard for content management.
+A full-stack portfolio website built with Next.js 16, React 19, TypeScript, Prisma, and MongoDB. Features a public portfolio showcase and an admin dashboard for content management.
 
 ## Features
 
@@ -12,7 +12,7 @@ A full-stack portfolio website built with Next.js 16, React 19, TypeScript, and 
 - SEO optimized pages
 
 ### Admin Features
-- Secure admin login with credentials
+- Secure admin login with JWT authentication
 - Protected admin routes
 - CRUD operations for:
   - Profile
@@ -25,7 +25,7 @@ A full-stack portfolio website built with Next.js 16, React 19, TypeScript, and 
 - **Frontend & Backend**: Next.js 16.1.1 (App Router), React 19, TypeScript
 - **Styling**: Tailwind CSS, shadcn/ui
 - **Forms**: React Hook Form + Zod validation
-- **Database**: JSON File System (stored in `/Data` folder)
+- **Database**: MongoDB with Prisma ORM
 - **Authentication**: JWT with HttpOnly cookies
 - **Security**: Server-side auth validation, Zod validation on all inputs
 
@@ -34,6 +34,7 @@ A full-stack portfolio website built with Next.js 16, React 19, TypeScript, and 
 ### Prerequisites
 
 - Node.js 18+ 
+- MongoDB database (local or MongoDB Atlas)
 - npm or yarn
 
 ### Installation
@@ -52,19 +53,29 @@ npm install
 3. Set up environment variables:
 Create a `.env` file in the root directory:
 ```env
+# For local MongoDB:
+DATABASE_URL="mongodb://localhost:27017/portfolio"
+# Or for MongoDB Atlas (cloud):
+# DATABASE_URL="mongodb+srv://username:password@cluster.mongodb.net/portfolio?retryWrites=true&w=majority"
 JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
 ADMIN_EMAIL="admin@example.com"
 ADMIN_PASSWORD="admin123"
 NEXTAUTH_URL="http://localhost:3000"
 ```
 
-4. Run the development server:
+4. Set up the database:
+```bash
+npx prisma db push
+npx prisma generate
+npm run db:seed
+```
+
+5. Run the development server:
 ```bash
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-The database files will be automatically created in the `/Data` directory when you first save any information via the admin dashboard.
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Project Structure
 

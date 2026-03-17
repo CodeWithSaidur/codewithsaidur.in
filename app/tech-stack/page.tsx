@@ -1,13 +1,14 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { db } from '@/lib/db'
+import connectDB from '@/lib/mongoose'
+import TechStack from '@/models/TechStack'
 
 export const metadata = {
   title: 'Tech Stack & Tools | Portfolio',
   description: 'Technologies and tools I use for development'
 }
 
-// Force dynamic rendering
+// Force dynamic rendering to prevent build-time database connection issues
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 export const fetchCache = 'force-no-store'
@@ -17,8 +18,12 @@ export default async function TechStackPage() {
   let techByCategory: Record<string, typeof techStack> = {}
 
   try {
-    const techStackData = await db.techStacks.findSorted({ createdAt: -1 })
-    techStack = techStackData
+    await connectDB()
+    const techStackData = await TechStack.find().sort({ createdAt: -1 }).lean()
+    techStack = techStackData.map((t: any) => ({
+      ...t,
+      id: t._id.toString()
+    }))
 
     techByCategory = techStack.reduce((acc, tech) => {
       if (!acc[tech.category]) {
@@ -28,7 +33,12 @@ export default async function TechStackPage() {
       return acc
     }, {} as Record<string, typeof techStack>)
   } catch (error: any) {
-    console.error('Error fetching tech stack:', error)
+    // During build, if database connection is skipped, just continue with empty data
+    if (error?.skipBuild) {
+      console.log('Database connection skipped during build')
+    } else {
+      console.error('Error fetching tech stack:', error)
+    }
   }
 
   return (

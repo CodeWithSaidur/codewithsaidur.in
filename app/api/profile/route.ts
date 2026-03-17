@@ -1,17 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
+import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
 import { profileSchema } from '@/lib/validations'
-import { db } from '@/lib/db'
+import Profile from '@/models/Profile'
 
 export async function GET() {
   try {
-    const profile = await db.profiles.findOne()
+    await connectDB()
+    const profile = await Profile.findOne()
     if (!profile) return NextResponse.json(null)
-    return NextResponse.json(profile)
+    return NextResponse.json(JSON.parse(JSON.stringify(profile)))
   } catch (error) {
     console.error('Profile GET error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     )
   }
@@ -24,6 +26,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    await connectDB()
     const body = await request.json()
     const validatedData = profileSchema.parse(body)
 
@@ -41,13 +44,13 @@ export async function POST(request: NextRequest) {
       phone: validatedData.phone?.trim() || null,
     }
 
-    const existingProfile = await db.profiles.findOne()
+    const existingProfile = await Profile.findOne()
 
     const profile = existingProfile
-      ? await db.profiles.findByIdAndUpdate(existingProfile.id || existingProfile._id, cleanData)
-      : await db.profiles.create(cleanData)
+      ? await Profile.findByIdAndUpdate(existingProfile._id, cleanData, { new: true })
+      : await Profile.create(cleanData)
 
-    return NextResponse.json(profile)
+    return NextResponse.json(JSON.parse(JSON.stringify(profile)))
   } catch (error: any) {
     if (error?.name === 'ZodError' || error?.issues) {
       const zodError = error.issues || []

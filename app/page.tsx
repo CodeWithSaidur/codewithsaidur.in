@@ -1,6 +1,10 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { db } from '@/lib/db'
+import connectDB from '@/lib/mongoose'
+import Profile from '@/models/Profile'
+import Project from '@/models/Project'
+import Skill from '@/models/Skill'
+import TechStack from '@/models/TechStack'
 import Image from 'next/image'
 import { Github, Twitter, Linkedin, Phone, MessageCircle } from 'lucide-react'
 
@@ -10,7 +14,7 @@ export const metadata = {
     'Full-stack developer portfolio showcasing projects, skills, and experience'
 }
 
-// Force dynamic rendering
+// Force dynamic rendering to prevent build-time database connection issues
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 export const fetchCache = 'force-no-store'
@@ -39,15 +43,32 @@ export default async function HomePage() {
   let techByCategory: Record<string, Array<any>> = {}
 
   try {
-    const profileData = await db.profiles.findOne()
-    const projectsData = await db.projects.findSorted({ createdAt: -1 })
-    const skillsData = await db.skills.findSorted({ createdAt: -1 })
-    const techStackData = await db.techStacks.findSorted({ createdAt: -1 })
+    await connectDB()
+    const profileData = await Profile.findOne().lean()
+    const projectsData = await Project.find().sort({ createdAt: -1 }).lean()
+    const skillsData = await Skill.find().sort({ createdAt: -1 }).lean()
+    const techStackData = await TechStack.find().sort({ createdAt: -1 }).lean()
 
-    profile = profileData as ProfileData | null
-    projects = projectsData
-    skills = skillsData
-    techStack = techStackData
+    // Convert _id to id for frontend compatibility
+    profile =
+      profileData && '_id' in profileData
+        ? {
+            ...(profileData as any),
+            id: (profileData._id as any).toString()
+          }
+        : null
+    projects = projectsData.map((p: any) => ({
+      ...p,
+      id: p._id.toString()
+    }))
+    skills = skillsData.map((s: any) => ({
+      ...s,
+      id: s._id.toString()
+    }))
+    techStack = techStackData.map((t: any) => ({
+      ...t,
+      id: t._id.toString()
+    }))
 
     // Group skills by category
     skillsByCategory = skills.reduce((acc, skill) => {
@@ -67,7 +88,12 @@ export default async function HomePage() {
       return acc
     }, {} as Record<string, Array<any>>)
   } catch (error: any) {
-    console.error('Error fetching data:', error)
+    // During build, if database connection is skipped, just continue with empty data
+    if (error?.skipBuild) {
+      console.log('Database connection skipped during build')
+    } else {
+      console.error('Error fetching data:', error)
+    }
     // Continue with empty data - page will still render with fallback content
   }
 
@@ -332,11 +358,7 @@ export default async function HomePage() {
         )}
       </main>
 
-      <footer className="border-t bg-white py-6 sm:py-8">
-        <div className="mx-auto max-w-7xl px-4 text-center text-sm text-gray-600 sm:text-base">
-          <p>© {new Date().getFullYear()} Portfolio. All rights reserved.</p>
-        </div>
-      </footer>
+
     </div>
   )
 }

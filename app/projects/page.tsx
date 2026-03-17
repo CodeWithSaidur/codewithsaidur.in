@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { db } from '@/lib/db'
+import connectDB from '@/lib/mongoose'
+import Project from '@/models/Project'
 import Image from 'next/image'
 
 export const metadata = {
@@ -8,7 +9,7 @@ export const metadata = {
   description: 'Browse through my portfolio of projects and applications'
 }
 
-// Force dynamic rendering
+// Force dynamic rendering to prevent build-time database connection issues
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 export const fetchCache = 'force-no-store'
@@ -17,10 +18,19 @@ export default async function ProjectsPage() {
   let projects: any[] = []
 
   try {
-    const projectsData = await db.projects.findSorted({ createdAt: -1 })
-    projects = projectsData
+    await connectDB()
+    const projectsData = await Project.find().sort({ createdAt: -1 }).lean()
+    projects = projectsData.map((p: any) => ({
+      ...p,
+      id: p._id.toString()
+    }))
   } catch (error: any) {
-    console.error('Error fetching projects:', error)
+    // During build, if database connection is skipped, just continue with empty data
+    if (error?.skipBuild) {
+      console.log('Database connection skipped during build')
+    } else {
+      console.error('Error fetching projects:', error)
+    }
   }
 
   return (

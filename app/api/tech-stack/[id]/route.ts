@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
 import { techStackSchema } from '@/lib/validations'
-import { db } from '@/lib/db'
+import TechStack from '@/models/TechStack'
 
 export async function PUT(
   request: NextRequest,
@@ -13,24 +14,26 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    await connectDB()
     const { id } = await params
     const body = await request.json()
     const validatedData = techStackSchema.parse(body)
 
-    const tech = await db.techStacks.findByIdAndUpdate(
+    const tech = await TechStack.findByIdAndUpdate(
       id,
       {
         name: validatedData.name,
         category: validatedData.category,
         icon: validatedData.icon || null,
-      }
+      },
+      { new: true }
     )
 
     if (!tech) {
       return NextResponse.json({ error: 'Tech stack item not found' }, { status: 404 })
     }
 
-    return NextResponse.json(tech)
+    return NextResponse.json(JSON.parse(JSON.stringify(tech)))
   } catch (error) {
     if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
@@ -38,7 +41,6 @@ export async function PUT(
         { status: 400 }
       )
     }
-    console.error('TechStack PUT error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -56,12 +58,12 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    await connectDB()
     const { id } = await params
-    await db.techStacks.findByIdAndDelete(id)
+    await TechStack.findByIdAndDelete(id)
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('TechStack DELETE error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
