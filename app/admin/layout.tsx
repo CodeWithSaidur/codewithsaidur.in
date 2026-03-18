@@ -78,6 +78,7 @@ export default function AdminLayout({
     { href: "/admin/tech-stack", label: "Tech Stack" },
     { href: "/admin/projects", label: "Projects" },
     { href: "/admin/pricing", label: "Pricing" },
+    { href: "/admin/courses", label: "Courses" },
   ]
 
   return (

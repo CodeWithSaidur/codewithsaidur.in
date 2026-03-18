@@ -77,23 +77,23 @@ export default function PricingSection() {
   if (plans.length === 0) return null
 
   return (
-    <section id="pricing" className="relative overflow-hidden pt-16 pb-24 bg-white/50">
+    <section id="pricing" className="relative overflow-hidden pt-10 pb-16 md:pt-16 md:pb-24 bg-white/50">
       <div className="absolute top-[10%] right-[10%] h-[40%] w-[40%] rounded-full bg-gradient-to-tr from-blue-100/30 to-indigo-100/30 blur-3xl animate-blob animation-delay-4000" />
       
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
+          <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-5xl px-4">
             {headerText}
           </h2>
         </div>
 
         {/* Plans Grid */}
-        <div className="mt-20 grid gap-8 lg:grid-cols-3">
+        <div className="mt-12 md:mt-20 grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`relative flex flex-col rounded-3xl border p-8 transition-all hover:translate-y-[-8px] hover:shadow-2xl ${
+              className={`relative flex flex-col rounded-3xl border p-6 md:p-8 transition-all hover:translate-y-[-8px] hover:shadow-2xl ${
                 plan.featured
                   ? "border-blue-200 bg-white shadow-xl ring-1 ring-blue-100"
                   : "border-gray-100 bg-white/50 backdrop-blur-sm"

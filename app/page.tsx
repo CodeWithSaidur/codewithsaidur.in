@@ -9,6 +9,7 @@ import Image from 'next/image'
 import { Github, Twitter, Linkedin, Phone, MessageCircle } from 'lucide-react'
 import Footer from '@/components/Footer'
 import PricingSection from '@/components/PricingSection'
+import CoursesSection from '@/components/CoursesSection'
 
 export const metadata = {
   title: 'Portfolio | Home',
@@ -115,20 +116,19 @@ export default async function HomePage() {
                 profile.avatar.trim() !== '' && (
                   <div className="relative mb-6 sm:mb-8">
                     {/* Glow effect behind avatar */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 opacity-20 blur-2xl animate-pulse" />
                     <Image
                       src={profile.avatar}
                       alt={profile.name || 'Profile avatar'}
                       width={120}
                       height={120}
-                      className="relative rounded-full border-4 border-white shadow-xl sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48"
+                      className="relative rounded-full border-4 border-white shadow-xl w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48"
                     />
                   </div>
                 )}
-              <h1 className="mb-3 text-gray-900 text-3xl font-extrabold sm:mb-4 sm:text-4xl md:text-5xl lg:text-6xl tracking-tight">
+              <h1 className="mb-4 text-gray-900 text-4xl font-extrabold sm:text-5xl md:text-6xl lg:text-7xl tracking-tighter leading-tight px-2">
                 {profile?.name || 'Full-Stack Developer'}
               </h1>
-              <p className="mb-6 max-w-2xl text-base text-gray-600 sm:mb-8 sm:text-lg md:text-xl font-medium">
+              <p className="mb-8 max-w-xl text-base text-gray-600 sm:text-lg md:text-xl font-medium px-4 leading-relaxed">
                 {profile?.bio ||
                   'Passionate developer building modern web applications'}
               </p>
@@ -194,6 +194,7 @@ export default async function HomePage() {
           </div>
         </section>
         <PricingSection />
+        <CoursesSection />
 
 
         {projects.length > 0 && (
