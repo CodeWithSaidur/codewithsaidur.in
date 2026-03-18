@@ -6,7 +6,7 @@ import Pricing from '@/models/Pricing'
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await getAdminFromRequest(request)
@@ -15,11 +15,12 @@ export async function PUT(
     }
 
     await connectDB()
+    const { id } = await params
     const body = await request.json()
     const validatedData = pricingSchema.parse(body)
 
     const plan = await Pricing.findByIdAndUpdate(
-      params.id,
+      id,
       {
         name: validatedData.name,
         price: validatedData.price,
@@ -53,7 +54,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await getAdminFromRequest(request)
@@ -62,7 +63,8 @@ export async function DELETE(
     }
 
     await connectDB()
-    const plan = await Pricing.findByIdAndDelete(params.id)
+    const { id } = await params
+    const plan = await Pricing.findByIdAndDelete(id)
 
     if (!plan) {
       return NextResponse.json({ error: 'Plan not found' }, { status: 404 })
