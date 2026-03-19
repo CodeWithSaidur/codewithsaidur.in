@@ -93,6 +93,12 @@ export const courseSchema = z.object({
   order: z.number().default(0),
 })
 
+export const teamMemberSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  designation: z.string().min(1, 'Designation is required'),
+  image: z.string().url().or(z.literal('')),
+})
+
 export type LoginInput = z.infer<typeof loginSchema>
 export type ProfileInput = z.infer<typeof profileSchema>
 export type SkillInput = z.infer<typeof skillSchema>
@@ -100,3 +106,4 @@ export type TechStackInput = z.infer<typeof techStackSchema>
 export type ProjectInput = z.infer<typeof projectSchema>
 export type PricingInput = z.infer<typeof pricingSchema>
 export type CourseInput = z.infer<typeof courseSchema>
+export type TeamMemberInput = z.infer<typeof teamMemberSchema>

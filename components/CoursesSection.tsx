@@ -89,7 +89,7 @@ export default function CoursesSection() {
           {courses.map((course) => (
             <div
               key={course.id}
-              className={`relative flex flex-col rounded-3xl border p-6 md:p-8 transition-all hover:translate-y-[-8px] hover:shadow-2xl ${
+              className={`relative flex flex-col rounded-3xl border p-4 md:p-6 transition-all hover:translate-y-[-8px] hover:shadow-2xl ${
                 course.featured
                   ? "border-indigo-200 bg-white shadow-xl ring-1 ring-indigo-100"
                   : "border-gray-100 bg-white/50 backdrop-blur-sm"
@@ -101,28 +101,28 @@ export default function CoursesSection() {
                 </div>
               )}
 
-              <div className="mb-8">
+              <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
-                   <BookOpen className="h-5 w-5 text-indigo-600" />
-                   <h3 className="text-xl font-bold text-gray-900">{course.name}</h3>
+                   <BookOpen className="h-4 w-4 text-indigo-600" />
+                   <h3 className="text-lg font-bold text-gray-900">{course.name}</h3>
                 </div>
-                <div className="mt-4 flex items-baseline">
-                  <span className="text-4xl font-extrabold tracking-tight text-gray-900">
+                <div className="mt-3 flex items-baseline">
+                  <span className="text-3xl font-extrabold tracking-tight text-gray-900">
                     {isNaN(Number(course.price)) ? "" : "₹"}
                     {course.price}
                   </span>
                 </div>
-                <p className="mt-4 text-sm font-medium text-gray-500 line-clamp-3">{course.description}</p>
+                <p className="mt-3 text-xs font-medium text-gray-500 line-clamp-3">{course.description}</p>
               </div>
 
-              <div className="flex-1 space-y-4">
+              <div className="flex-1 space-y-3">
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">What's included</p>
                 {course.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center gap-3">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-50 transition-colors group-hover:bg-indigo-100">
-                      <Check className="h-3 w-3 text-indigo-600" />
+                  <div key={idx} className="flex items-center gap-2">
+                    <div className="flex h-4 w-4 items-center justify-center rounded-full bg-indigo-50 transition-colors group-hover:bg-indigo-100">
+                      <Check className="h-2.5 w-2.5 text-indigo-600" />
                     </div>
-                    <span className="text-sm font-medium text-gray-600 italic">{feature}</span>
+                    <span className="text-xs font-medium text-gray-600 italic">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -133,11 +133,11 @@ export default function CoursesSection() {
                   : "/#contact"}
                 target={whatsapp ? "_blank" : "_self"}
                 rel={whatsapp ? "noopener noreferrer" : ""}
-                className="mt-8"
+                className="mt-6"
               >
                 <Button
                   variant={course.featured ? "gradient" : "outline"}
-                  className={`w-full h-12 rounded-xl text-base font-bold shadow-lg ${!course.featured ? 'border-indigo-100 text-indigo-600 hover:bg-indigo-50' : ''}`}
+                  className={`w-full h-10 rounded-xl text-sm font-bold shadow-lg ${!course.featured ? 'border-indigo-100 text-indigo-600 hover:bg-indigo-50' : ''}`}
                 >
                   {course.cta || "Enroll Now"}
                 </Button>

@@ -79,6 +79,7 @@ export default function AdminLayout({
     { href: "/admin/projects", label: "Projects" },
     { href: "/admin/pricing", label: "Pricing" },
     { href: "/admin/courses", label: "Courses" },
+    { href: "/admin/team-members", label: "Team Members" },
   ]
 
   return (

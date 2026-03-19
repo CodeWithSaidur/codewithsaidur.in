@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Check, HelpCircle, Sparkles, BookOpen } from "lucide-react"
+import { Check, HelpCircle, BookOpen } from "lucide-react"
 import Footer from "@/components/Footer"
 
 interface Course {
@@ -89,7 +89,7 @@ export default function CoursesPage() {
               courses.map((course) => (
                 <div
                   key={course.id}
-                  className={`relative flex flex-col rounded-3xl border p-8 transition-all hover:translate-y-[-8px] hover:shadow-2xl ${
+                  className={`relative flex flex-col rounded-3xl border p-6 transition-all hover:translate-y-[-8px] hover:shadow-2xl ${
                     course.featured
                     ? "border-indigo-200 bg-white shadow-xl ring-1 ring-indigo-100"
                     : "border-gray-100 bg-white/50 backdrop-blur-sm"
@@ -101,25 +101,25 @@ export default function CoursesPage() {
                     </div>
                   )}
 
-                  <div className="mb-8">
-                    <h3 className="text-xl font-bold text-gray-900 line-clamp-2 min-h-[3.5rem]">{course.name}</h3>
-                    <div className="mt-4 flex items-baseline">
-                      <span className="text-4xl font-extrabold tracking-tight text-gray-900">
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-gray-900 line-clamp-2 min-h-[3rem]">{course.name}</h3>
+                    <div className="mt-3 flex items-baseline">
+                      <span className="text-3xl font-extrabold tracking-tight text-gray-900">
                         {isNaN(Number(course.price)) ? "" : "₹"}
                         {course.price}
                       </span>
                     </div>
-                    <p className="mt-4 text-sm font-medium text-gray-500 line-clamp-3 h-[3rem]">{course.description}</p>
+                    <p className="mt-3 text-xs font-medium text-gray-500 line-clamp-3 h-[2.5rem]">{course.description}</p>
                   </div>
 
-                  <div className="flex-1 space-y-4">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b pb-2 mb-4">Course Highlights</p>
+                  <div className="flex-1 space-y-3">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b pb-2 mb-3">Course Highlights</p>
                     {course.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-3">
-                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-50 transition-colors">
-                          <Check className="h-3 w-3 text-indigo-600" />
+                      <div key={idx} className="flex items-center gap-2">
+                        <div className="flex h-4 w-4 items-center justify-center rounded-full bg-indigo-50 transition-colors">
+                          <Check className="h-2.5 w-2.5 text-indigo-600" />
                         </div>
-                        <span className="text-sm font-medium text-gray-600 line-clamp-1 italic">{feature}</span>
+                        <span className="text-xs font-medium text-gray-600 line-clamp-1 italic">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -130,11 +130,11 @@ export default function CoursesPage() {
                       : "/#contact"}
                     target={whatsapp ? "_blank" : "_self"}
                     rel={whatsapp ? "noopener noreferrer" : ""}
-                    className="mt-8"
+                    className="mt-6"
                   >
                     <Button
                       variant={course.featured ? "gradient" : "outline"}
-                      className={`w-full h-12 rounded-xl text-base font-bold shadow-lg ${!course.featured ? 'border-indigo-200 text-indigo-600 hover:bg-indigo-50' : ''}`}
+                      className={`w-full h-10 rounded-xl text-sm font-bold shadow-lg ${!course.featured ? 'border-indigo-200 text-indigo-600 hover:bg-indigo-50' : ''}`}
                     >
                       {course.cta || "Enroll Now"}
                     </Button>
@@ -170,34 +170,7 @@ export default function CoursesPage() {
             </div>
           </div>
 
-          {/* Trust Banner */}
-          <div className="mt-32 rounded-3xl bg-indigo-950 p-12 text-center text-white relative overflow-hidden">
-            <div className="absolute top-0 left-0 h-full w-full opacity-10 pointer-events-none">
-               <div className="absolute top-0 right-0 h-64 w-64 bg-indigo-500 rounded-full blur-[100px]" />
-               <div className="absolute bottom-0 left-0 h-64 w-64 bg-purple-500 rounded-full blur-[100px]" />
-            </div>
-            <Sparkles className="mx-auto h-12 w-12 text-indigo-400" />
-            <h2 className="mt-6 text-3xl font-extrabold">Ready to advance your career?</h2>
-            <p className="mt-4 text-indigo-200 max-w-xl mx-auto">Get expert-led instruction and start building your future today.</p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <a 
-                href={whatsapp 
-                  ? `https://wa.me/${whatsapp}?text=${encodeURIComponent("Hi, I have some questions about your courses. Could we chat?")}` 
-                  : "/#contact"}
-                target={whatsapp ? "_blank" : "_self"}
-                rel={whatsapp ? "noopener noreferrer" : ""}
-              >
-                <Button variant="gradient" className="h-14 px-8 rounded-full text-lg shadow-xl shadow-indigo-900/20">
-                  Chat With Us
-                </Button>
-              </a>
-              <Link href="/">
-                <Button variant="outline" className="h-14 px-8 rounded-full text-lg border-white/20 hover:bg-white/10 text-white">
-                  Back to Portfolio
-                </Button>
-              </Link>
-            </div>
-          </div>
+
         </div>
       </main>
 

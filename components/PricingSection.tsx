@@ -93,7 +93,7 @@ export default function PricingSection() {
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`relative flex flex-col rounded-3xl border p-6 md:p-8 transition-all hover:translate-y-[-8px] hover:shadow-2xl ${
+              className={`relative flex flex-col rounded-3xl border p-4 md:p-6 transition-all hover:translate-y-[-8px] hover:shadow-2xl ${
                 plan.featured
                   ? "border-blue-200 bg-white shadow-xl ring-1 ring-blue-100"
                   : "border-gray-100 bg-white/50 backdrop-blur-sm"
@@ -105,27 +105,27 @@ export default function PricingSection() {
                 </div>
               )}
 
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-gray-900">{plan.name}</h3>
-                <div className="mt-4 flex items-baseline">
-                  <span className="text-4xl font-extrabold tracking-tight text-gray-900">
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-gray-900">{plan.name}</h3>
+                <div className="mt-3 flex items-baseline">
+                  <span className="text-3xl font-extrabold tracking-tight text-gray-900">
                     {isNaN(Number(plan.price)) ? "" : "₹"}
                     {plan.price}
                   </span>
                   {!isNaN(Number(plan.price)) && Number(plan.price) > 0 && (
-                    <span className="ml-1 text-sm font-semibold text-gray-500">/one-time</span>
+                    <span className="ml-1 text-xs font-semibold text-gray-500">/one-time</span>
                   )}
                 </div>
-                <p className="mt-4 text-sm font-medium text-gray-500">{plan.description}</p>
+                <p className="mt-3 text-xs font-medium text-gray-500">{plan.description}</p>
               </div>
 
-              <div className="flex-1 space-y-4">
+              <div className="flex-1 space-y-3">
                 {plan.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center gap-3">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-50 transition-colors group-hover:bg-blue-100">
-                      <Check className="h-3 w-3 text-blue-600" />
+                  <div key={idx} className="flex items-center gap-2">
+                    <div className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-50 transition-colors group-hover:bg-blue-100">
+                      <Check className="h-2.5 w-2.5 text-blue-600" />
                     </div>
-                    <span className="text-sm font-medium text-gray-600">{feature}</span>
+                    <span className="text-xs font-medium text-gray-600">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -136,11 +136,11 @@ export default function PricingSection() {
                   : "/#contact"}
                 target={whatsapp ? "_blank" : "_self"}
                 rel={whatsapp ? "noopener noreferrer" : ""}
-                className="mt-8"
+                className="mt-6"
               >
                 <Button
                   variant={plan.featured ? "gradient" : "outline"}
-                  className="w-full h-12 rounded-xl text-base font-bold shadow-lg"
+                  className="w-full h-10 rounded-xl text-sm font-bold shadow-lg"
                 >
                   {plan.cta || "Work With Me"}
                 </Button>

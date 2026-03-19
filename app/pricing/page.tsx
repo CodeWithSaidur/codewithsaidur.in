@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Check, HelpCircle, Sparkles } from "lucide-react"
+import { Check, HelpCircle } from "lucide-react"
 import Footer from "@/components/Footer"
 
 interface Plan {
@@ -90,7 +90,7 @@ export default function PricingPage() {
               plans.map((plan) => (
                 <div
                   key={plan.id}
-                  className={`relative flex flex-col rounded-3xl border p-8 transition-all hover:translate-y-[-8px] hover:shadow-2xl ${
+                  className={`relative flex flex-col rounded-3xl border p-6 transition-all hover:translate-y-[-8px] hover:shadow-2xl ${
                     plan.featured
                     ? "border-blue-200 bg-white shadow-xl ring-1 ring-blue-100"
                     : "border-gray-100 bg-white/50 backdrop-blur-sm"
@@ -102,27 +102,27 @@ export default function PricingPage() {
                     </div>
                   )}
 
-                  <div className="mb-8">
-                    <h3 className="text-xl font-bold text-gray-900">{plan.name}</h3>
-                    <div className="mt-4 flex items-baseline">
-                      <span className="text-4xl font-extrabold tracking-tight text-gray-900">
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-gray-900">{plan.name}</h3>
+                    <div className="mt-3 flex items-baseline">
+                      <span className="text-3xl font-extrabold tracking-tight text-gray-900">
                         {!isNaN(Number(plan.price)) ? "₹" : ""}
                         {plan.price}
                       </span>
                       {!isNaN(Number(plan.price)) && Number(plan.price) > 0 && (
-                        <span className="ml-1 text-sm font-semibold text-gray-500">/one-time</span>
+                        <span className="ml-1 text-xs font-semibold text-gray-500">/one-time</span>
                       )}
                     </div>
-                    <p className="mt-4 text-sm font-medium text-gray-500">{plan.description}</p>
+                    <p className="mt-3 text-xs font-medium text-gray-500">{plan.description}</p>
                   </div>
 
-                  <div className="flex-1 space-y-4">
+                  <div className="flex-1 space-y-3">
                     {plan.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-3">
-                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-50 transition-colors group-hover:bg-blue-100">
-                          <Check className="h-3 w-3 text-blue-600" />
+                      <div key={idx} className="flex items-center gap-2">
+                        <div className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-50 transition-colors group-hover:bg-blue-100">
+                          <Check className="h-2.5 w-2.5 text-blue-600" />
                         </div>
-                        <span className="text-sm font-medium text-gray-600">{feature}</span>
+                        <span className="text-xs font-medium text-gray-600">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -133,11 +133,11 @@ export default function PricingPage() {
                       : "/#contact"}
                     target={whatsapp ? "_blank" : "_self"}
                     rel={whatsapp ? "noopener noreferrer" : ""}
-                    className="mt-8"
+                    className="mt-6"
                   >
                     <Button
                       variant={plan.featured ? "gradient" : "outline"}
-                      className="w-full h-12 rounded-xl text-base font-bold shadow-lg"
+                      className="w-full h-10 rounded-xl text-sm font-bold shadow-lg"
                     >
                       {plan.cta || "Work With Me"}
                     </Button>
@@ -166,30 +166,7 @@ export default function PricingPage() {
             </div>
           </div>
 
-          {/* Trust Banner */}
-          <div className="mt-32 rounded-3xl bg-gray-900 p-12 text-center text-white">
-            <Sparkles className="mx-auto h-12 w-12 text-yellow-400" />
-            <h2 className="mt-6 text-3xl font-extrabold">Ready to start your project?</h2>
-            <p className="mt-4 text-gray-400">Join 50+ clients who transformed their digital presence.</p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <a 
-                href={whatsapp 
-                  ? `https://wa.me/${whatsapp}?text=${encodeURIComponent("Hi, I'm interested in booking a consultation for my project.")}` 
-                  : "/#contact"}
-                target={whatsapp ? "_blank" : "_self"}
-                rel={whatsapp ? "noopener noreferrer" : ""}
-              >
-                <Button variant="gradient" className="h-14 px-8 rounded-full text-lg">
-                  Book a Consultation
-                </Button>
-              </a>
-              <Link href="/projects">
-                <Button variant="outline" className="h-14 px-8 rounded-full text-lg border-white/20 hover:bg-white/10 text-white">
-                  View Portfolio
-                </Button>
-              </Link>
-            </div>
-          </div>
+
         </div>
       </main>
 

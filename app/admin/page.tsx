@@ -23,6 +23,7 @@ type Stats = {
   featuredProjects: number
   skills: number
   techStack: number
+  teamMembers: number
 }
 
 export default function AdminDashboardPage() {
@@ -32,6 +33,7 @@ export default function AdminDashboardPage() {
     featuredProjects: 0,
     skills: 0,
     techStack: 0,
+    teamMembers: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
 
@@ -41,17 +43,19 @@ export default function AdminDashboardPage() {
 
   const fetchStats = async () => {
     try {
-      const [profileRes, projectsRes, skillsRes, techStackRes] = await Promise.all([
+      const [profileRes, projectsRes, skillsRes, techStackRes, teamRes] = await Promise.all([
         fetch("/api/profile"),
         fetch("/api/projects"),
         fetch("/api/skills"),
         fetch("/api/tech-stack"),
+        fetch("/api/team-members"),
       ])
 
       const profile = await profileRes.json()
       const projects = await projectsRes.json()
       const skills = await skillsRes.json()
       const techStack = await techStackRes.json()
+      const team = await teamRes.json()
 
       setStats({
         profile: {
@@ -62,6 +66,7 @@ export default function AdminDashboardPage() {
         featuredProjects: projects.filter((p: any) => p.featured).length || 0,
         skills: skills.length || 0,
         techStack: techStack.length || 0,
+        teamMembers: team.length || 0,
       })
     } catch (error) {
       console.error("Failed to fetch stats:", error)
@@ -124,23 +129,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-10">
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 p-8 text-white shadow-xl lg:p-12">
-        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl" />
-        
-        <div className="relative">
-          <h1 className="mb-4 text-3xl font-extrabold lg:text-5xl">
-            {stats.profile.exists && stats.profile.name
-              ? `Welcome back, ${stats.profile.name.split(' ')[0]}!`
-              : "Welcome to your Command Center!"}
-          </h1>
-          <p className="max-w-2xl text-lg font-medium text-blue-50/90">
-            {stats.profile.exists
-              ? "Your professional presence is looking great. Use the tools below to keep your portfolio up to date and impactful."
-              : "Let's build your professional legacy. Start by setting up your profile and showcasing your best work."}
-          </p>
-        </div>
-      </div>
+
 
       {/* Stats Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -258,6 +247,20 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
                   <Plus className="h-5 w-5 text-gray-300 transition-colors group-hover:text-orange-500" />
+                </div>
+              </Link>
+              <Link href="/admin/team-members" className="group rounded-2xl border border-gray-50 bg-gray-50/30 p-4 transition-all hover:border-blue-100 hover:bg-white hover:shadow-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-gray-100">
+                      <User className="h-6 w-6 text-pink-600" />
+                    </div>
+                    <div>
+                      <span className="block font-bold text-gray-900">Team Members</span>
+                      <span className="text-xs font-medium text-gray-500">{stats.teamMembers} Members</span>
+                    </div>
+                  </div>
+                  <Plus className="h-5 w-5 text-gray-300 transition-colors group-hover:text-pink-500" />
                 </div>
               </Link>
             </div>
