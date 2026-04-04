@@ -18,7 +18,7 @@ const PricingSchema = new Schema<IPricing>(
     price: { type: String, required: true },
     description: { type: String, required: true },
     features: { type: [String], default: [] },
-    cta: { type: String, default: 'Work With Me' },
+    cta: { type: String, default: 'Work With Me' }, // 
     featured: { type: Boolean, default: false },
     order: { type: Number, default: 0 }
   },
