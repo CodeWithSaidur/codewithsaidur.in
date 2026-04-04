@@ -10,6 +10,10 @@ import { Github, Twitter, Linkedin, Phone, MessageCircle } from 'lucide-react'
 import Footer from '@/components/Footer'
 import PricingSection from '@/components/PricingSection'
 import CoursesSection from '@/components/CoursesSection'
+import DevelopmentTeamPricing from '@/components/DevelopmentTeamPricing'
+import ThirdPartyServiceCosts from '@/components/ThirdPartyServiceCosts'
+import FAQSection from '@/components/FAQSection'
+import Pricing from '@/models/Pricing'
 
 export const metadata = {
   title: 'Portfolio | Home',
@@ -17,10 +21,8 @@ export const metadata = {
     'Full-stack developer portfolio showcasing projects, skills, and experience'
 }
 
-// Force dynamic rendering to prevent build-time database connection issues
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
-export const fetchCache = 'force-no-store'
+// Optimize for performance with Incremental Static Regeneration (ISR)
+export const revalidate = 3600 // Revalidate every hour
 export const runtime = 'nodejs'
 
 interface ProfileData {
@@ -44,6 +46,7 @@ export default async function HomePage() {
   let techStack: any[] = []
   let skillsByCategory: Record<string, Array<any>> = {}
   let techByCategory: Record<string, Array<any>> = {}
+  let plans: any[] = []
 
   try {
     await connectDB()
@@ -51,6 +54,11 @@ export default async function HomePage() {
     const projectsData = await Project.find().sort({ createdAt: -1 }).lean()
     const skillsData = await Skill.find().sort({ createdAt: -1 }).lean()
     const techStackData = await TechStack.find().sort({ createdAt: -1 }).lean()
+    const pricingData = await Pricing.find().sort({ order: 1, createdAt: -1 }).lean()
+    plans = JSON.parse(JSON.stringify(pricingData)).map((p: any) => ({
+      ...p,
+      id: p._id
+    }))
 
     // Convert _id to id for frontend compatibility
     profile =
@@ -193,7 +201,13 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-        <PricingSection />
+        <PricingSection 
+          initialPlans={plans} 
+          whatsappNumber={profile?.whatsapp?.replace(/[^0-9]/g, "")} 
+        />
+        <ThirdPartyServiceCosts />
+        <DevelopmentTeamPricing />
+        <FAQSection />
         <CoursesSection />
 
 

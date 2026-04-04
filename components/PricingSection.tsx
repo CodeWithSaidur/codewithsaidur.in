@@ -1,9 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Check, HelpCircle } from "lucide-react"
+import { Check } from "lucide-react"
 
 interface Plan {
   id: string
@@ -15,53 +14,101 @@ interface Plan {
   featured: boolean
 }
 
-export default function PricingSection() {
-  const [plans, setPlans] = useState<Plan[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [whatsapp, setWhatsapp] = useState<string>("")
+interface PricingSectionProps {
+  initialPlans?: Plan[]
+  whatsappNumber?: string
+}
+
+export default function PricingSection({ initialPlans, whatsappNumber }: PricingSectionProps) {
+  const [plans, setPlans] = useState<Plan[]>(initialPlans || [])
+  const [isLoading, setIsLoading] = useState(!initialPlans)
+  const [whatsapp, setWhatsapp] = useState<string>(whatsappNumber || "")
   const [headerText, setHeaderText] = useState("Launch your business online faster with me")
 
-  const faqs = [
+  const defaultPlans: Plan[] = [
     {
-      q: "What technologies do you use?",
-      a: "I primarily work with Next.js, React, Node.js, and modern CSS frameworks like Tailwind. For databases, I use MongoDB, PostgreSQL, and Redis.",
+      id: "starter",
+      name: "Starter Package",
+      price: "15,000",
+      description: "Perfect for personal brands and small businesses looking for a professional presence.",
+      features: [
+        "Up to 5 Responsive Pages",
+        "Basic SEO Optimization",
+        "Contact Form Integration",
+        "WhatsApp Chat Integration",
+        "1 Month Free Support",
+        "Social Media Linking"
+      ],
+      cta: "Start Your Brand",
+      featured: false
     },
     {
-      q: "Do you offer maintenance?",
-      a: "Yes, all my plans include a support period. I also offer separate maintenance packages for long-term updates and security monitoring.",
+      id: "business",
+      name: "Business Growth",
+      price: "45,000",
+      description: "Full-featured e-commerce or business platform designed to scale your operations.",
+      features: [
+        "Unlimited Products/Pages",
+        "Payment Gateway Integration",
+        "Admin Dashboard / CMS",
+        "Sales Analytics & Tracking",
+        "Email Marketing Setup",
+        "3 Months Premium Support",
+        "Fast Page Load Speed"
+      ],
+      cta: "Scale Your Business",
+      featured: true
     },
     {
-      q: "Can I upgrade my plan later?",
-      a: "Absolutely. You can start with basic and scale as your business grows. We'll simply adjust the scope of work and timeline.",
-    },
+      id: "enterprise",
+      name: "Enterprise Custom",
+      price: "1,20,000",
+      description: "Complex SaaS, AI-driven applications, or custom enterprise solutions built from scratch.",
+      features: [
+        "Custom SaaS Architecture",
+        "AI / Machine Learning Integration",
+        "Scalable Cloud Backend",
+        "Advanced Security Protocols",
+        "Dedicated Project Manager",
+        "12 Months Tech Support",
+        "Performance Optimization"
+      ],
+      cta: "Build Your Vision",
+      featured: false
+    }
   ]
 
   useEffect(() => {
-    // Fetch plans
-    fetch("/api/pricing")
-      .then(res => res.json())
-      .then(data => {
-        setPlans(data)
-        setIsLoading(false)
-      })
-      .catch(() => setIsLoading(false))
+    // If we already have initial plans, we skip the initial loading fetch
+    // But we might want to refresh them in the background
+    if (!initialPlans) {
+      fetch("/api/pricing")
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.length > 0) {
+            setPlans(data)
+          } else {
+            setPlans(defaultPlans)
+          }
+          setIsLoading(false)
+        })
+        .catch(() => {
+          setPlans(defaultPlans)
+          setIsLoading(false)
+        })
+    }
 
-    // Fetch profile for whatsapp number
-    fetch("/api/profile")
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.whatsapp) {
-          setWhatsapp(data.whatsapp.replace(/[^0-9]/g, ""))
-        }
-      })
-      .catch(err => console.error("Error fetching profile:", err))
-    // Randomize header
-    const headers = [
-      "Launch your business online faster with me",
-      "Make your business online today"
-    ]
-    setHeaderText(headers[Math.floor(Math.random() * headers.length)])
-  }, [])
+    if (!whatsappNumber) {
+      fetch("/api/profile")
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.whatsapp) {
+            setWhatsapp(data.whatsapp.replace(/[^0-9]/g, ""))
+          }
+        })
+        .catch(err => console.error("Error fetching profile:", err))
+    }
+  }, [initialPlans, whatsappNumber])
 
   if (isLoading) {
     return (
@@ -147,24 +194,6 @@ export default function PricingSection() {
               </a>
             </div>
           ))}
-        </div>
-
-        {/* FAQ Section */}
-        <div className="mt-32">
-          <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900">FAQ</h2>
-          </div>
-          <div className="mx-auto mt-12 max-w-3xl space-y-4">
-            {faqs.map((faq) => (
-              <div key={faq.q} className="rounded-2xl border border-gray-100 bg-white/50 p-6 backdrop-blur-sm transition-all hover:bg-white hover:shadow-md">
-                <h4 className="flex items-center gap-3 text-lg font-bold text-gray-900">
-                  <HelpCircle className="h-5 w-5 text-blue-500" />
-                  {faq.q}
-                </h4>
-                <p className="mt-3 ml-8 font-medium text-gray-600 text-sm leading-relaxed">{faq.a}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
