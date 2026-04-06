@@ -411,6 +411,7 @@ export default function AdminProjectsPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(project)}
+                        disabled={isLoading}
                         className="h-9 w-9 rounded-lg hover:bg-white hover:text-blue-600 hover:shadow-sm"
                       >
                         <Edit className="h-4 w-4" />
@@ -419,6 +420,7 @@ export default function AdminProjectsPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDelete(project.id)}
+                        disabled={isLoading}
                         className="h-9 w-9 rounded-lg hover:bg-white hover:text-red-500 hover:shadow-sm"
                       >
                         <Trash2 className="h-4 w-4" />

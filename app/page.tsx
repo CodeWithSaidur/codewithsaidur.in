@@ -8,12 +8,12 @@ import TechStack from '@/models/TechStack'
 import Image from 'next/image'
 import { Github, Twitter, Linkedin, Phone, MessageCircle } from 'lucide-react'
 import Footer from '@/components/Footer'
-import PricingSection from '@/components/PricingSection'
+import PlansPricingSection from '@/components/PlansPricingSection'
 import CoursesSection from '@/components/CoursesSection'
-import DevelopmentTeamPricing from '@/components/DevelopmentTeamPricing'
-import ThirdPartyServiceCosts from '@/components/ThirdPartyServiceCosts'
+import FeatureCostsSection from '@/components/FeatureCostsSection'
+import ServiceCostsSection from '@/components/ServiceCostsSection'
 import FAQSection from '@/components/FAQSection'
-import Pricing from '@/models/Pricing'
+import Plan from '@/models/Plan'
 
 export const metadata = {
   title: 'Portfolio | Home',
@@ -54,7 +54,7 @@ export default async function HomePage() {
     const projectsData = await Project.find().sort({ createdAt: -1 }).lean()
     const skillsData = await Skill.find().sort({ createdAt: -1 }).lean()
     const techStackData = await TechStack.find().sort({ createdAt: -1 }).lean()
-    const pricingData = await Pricing.find().sort({ order: 1, createdAt: -1 }).lean()
+    const pricingData = await Plan.find().sort({ order: 1, createdAt: -1 }).lean()
     plans = JSON.parse(JSON.stringify(pricingData)).map((p: any) => ({
       ...p,
       id: p._id
@@ -201,12 +201,12 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-        <PricingSection 
+        <PlansPricingSection 
           initialPlans={plans} 
           whatsappNumber={profile?.whatsapp?.replace(/[^0-9]/g, "")} 
         />
-        <ThirdPartyServiceCosts />
-        <DevelopmentTeamPricing />
+        <ServiceCostsSection whatsappNumber={profile?.whatsapp?.replace(/[^0-9]/g, "")} />
+        <FeatureCostsSection whatsappNumber={profile?.whatsapp?.replace(/[^0-9]/g, "")} />
         <FAQSection />
         <CoursesSection />
 

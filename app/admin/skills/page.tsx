@@ -78,6 +78,7 @@ export default function AdminSkillsPage() {
   }
 
   const onSubmit = async (data: SkillInput) => {
+    setIsLoading(true)
     try {
       const url = editingSkill
         ? `/api/skills/${editingSkill.id}`
@@ -109,6 +110,8 @@ export default function AdminSkillsPage() {
         description: "Failed to save skill",
         variant: "destructive",
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -125,6 +128,7 @@ export default function AdminSkillsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this skill?")) return
 
+    setIsLoading(true)
     try {
       const response = await fetch(`/api/skills/${id}`, {
         method: "DELETE",
@@ -146,6 +150,8 @@ export default function AdminSkillsPage() {
         description: "Failed to delete skill",
         variant: "destructive",
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -261,6 +267,7 @@ export default function AdminSkillsPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(skill)}
+                        disabled={isLoading}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -268,6 +275,7 @@ export default function AdminSkillsPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDelete(skill.id)}
+                        disabled={isLoading}
                       >
                         <Trash2 className="h-4 w-4 text-red-600" />
                       </Button>

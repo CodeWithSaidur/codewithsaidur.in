@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
-import { pricingSchema } from '@/lib/validations'
-import Pricing from '@/models/Pricing'
+import { serviceCostSchema } from '@/lib/validations'
+import ServiceCost from '@/models/ServiceCost'
 
 export async function GET() {
   try {
     await connectDB()
-    const plans = await Pricing.find().sort({ order: 1, createdAt: -1 })
-    return NextResponse.json(JSON.parse(JSON.stringify(plans)))
+    const costs = await ServiceCost.find().sort({ order: 1, createdAt: -1 })
+    return NextResponse.json(JSON.parse(JSON.stringify(costs)))
   } catch (error) {
     return NextResponse.json(
       { error: 'Internal server error' },
@@ -26,19 +26,11 @@ export async function POST(request: NextRequest) {
 
     await connectDB()
     const body = await request.json()
-    const validatedData = pricingSchema.parse(body)
+    const validatedData = serviceCostSchema.parse(body)
 
-    const plan = await Pricing.create({
-      name: validatedData.name,
-      price: validatedData.price,
-      description: validatedData.description,
-      features: validatedData.features,
-      cta: validatedData.cta,
-      featured: validatedData.featured,
-      order: validatedData.order,
-    })
+    const cost = await ServiceCost.create(validatedData)
 
-    return NextResponse.json(JSON.parse(JSON.stringify(plan)))
+    return NextResponse.json(JSON.parse(JSON.stringify(cost)))
   } catch (error) {
     if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(

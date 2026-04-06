@@ -1,45 +1,65 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Search, CheckCircle2, Calculator, ArrowRight, ExternalLink, Loader2, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-const services = [
-  { name: "Domain Name (.com) + SSL", cost: 932, type: "fixed" }, 
-  { name: "Web Hosting (Cloud/VPS)", cost: 3333, type: "fixed" }, 
-  { name: "Managed Database (Atlas/PlanetScale)", cost: 12000, type: "fixed" },
-  { name: "Cloud Storage (AWS S3/GCS)", cost: 4500, type: "fixed" },
-  { name: "File Processing (PDF/Image/Compression)", cost: 6000, type: "usage" },
-  { name: "User Auth & Security (Clerk/Auth0)", cost: 24000, type: "usage" },
-  { name: "Email Infrastructure (Resend/SendGrid)", cost: 14000, type: "usage" },
-  { name: "SMS & WhatsApp API (Twilio/Meta)", cost: 22000, type: "usage" },
-  { name: "Payment Gateway (2.9% / transaction)", cost: 12000, type: "usage" },
-  { name: "Dynamic Maps & Geocoding (Google/Mapbox)", cost: 8000, type: "usage" },
-  { name: "AI Integration (GPT-4o/Claude APIs)", cost: 18000, type: "usage" },
-  { name: "Video Processing & CDN (Mux/AWS)", cost: 42000, type: "usage" },
-  { name: "Advanced Analytics (Mixpanel/Amplitude)", cost: 15000, type: "usage" },
-  { name: "High-Performance Search (Algolia)", cost: 12000, type: "usage" },
-  { name: "Logging & Observability (BetterStack)", cost: 7500, type: "usage" },
-  { name: "Customer Support (Loom/Intercom/Zendesk)", cost: 28000, type: "usage" },
-];
+interface ServiceCost {
+  id?: string
+  name: string
+  cost: number
+  type: "fixed" | "usage"
+}
 
-export default function ThirdPartyServiceCosts() {
+interface ServiceCostsSectionProps {
+  whatsappNumber?: string
+}
+
+export default function ServiceCostsSection({ whatsappNumber }: ServiceCostsSectionProps) {
+  const [services, setServices] = useState<ServiceCost[]>([])
   const [selectedServices, setSelectedServices] = useState<number[]>([])
   const [expectedUsers, setExpectedUsers] = useState(1000)
   const [domainQuery, setDomainQuery] = useState("")
   const [isChecking, setIsChecking] = useState(false)
+  const [isLoadingServices, setIsLoadingServices] = useState(true)
   const [availability, setAvailability] = useState<{ available: boolean; domain: string } | null>(null)
+  const [whatsapp, setWhatsapp] = useState(whatsappNumber || "")
 
-  const getServiceCost = (service: typeof services[0]) => {
+  useEffect(() => {
+    if (!whatsappNumber) {
+      fetch("/api/profile")
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.whatsapp) {
+            setWhatsapp(data.whatsapp.replace(/[^0-9]/g, ""))
+          }
+        })
+    }
+  }, [whatsappNumber])
+
+  const getServiceCost = (service: ServiceCost) => {
     if (service.type === "fixed") return service.cost
     // Usage-based cost scaling (assuming base cost is for 1000 users)
     const factor = Math.max(1, expectedUsers / 1000)
     return Math.round(service.cost * factor)
   }
 
+  useEffect(() => {
+    fetch("/api/service-costs")
+      .then(res => res.json())
+      .then(data => {
+        if (data && Array.isArray(data)) {
+          setServices(data)
+        }
+      })
+      .catch(err => console.error("Error fetching services:", err))
+      .finally(() => {
+        setIsLoadingServices(false)
+      })
+  }, [])
+
   const checkDomain = async () => {
-    // ... (rest of checkDomain)
     let query = domainQuery.trim()
     if (!query) return
 
@@ -181,7 +201,12 @@ export default function ThirdPartyServiceCosts() {
 
             {/* Services Grid */}
             <div className="grid gap-4 sm:grid-cols-2">
-              {services.map((service, index) => {
+              {isLoadingServices ? (
+                [1, 2, 3, 4, 5, 6].map(i => (
+                  <div key={i} className="h-20 animate-pulse rounded-2xl bg-zinc-100" />
+                ))
+              ) : (
+                services.map((service, index) => {
                 const currentCost = getServiceCost(service)
                 return (
                   <div
@@ -219,7 +244,7 @@ export default function ThirdPartyServiceCosts() {
                     </div>
                   </div>
                 )
-              })}
+              }))}
             </div>
           </div>
 
@@ -272,13 +297,21 @@ export default function ThirdPartyServiceCosts() {
                   </div>
 
                   <div className="pt-6">
-                    <Button
-                      variant="outline"
-                      className="w-full h-14 rounded-2xl border-white/20 bg-white/5 hover:bg-white hover:text-black font-bold text-white transition-all group"
+                    <a
+                      href={whatsapp 
+                        ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hi, I've calculated an estimated annual infrastructure cost of ₹${total.toLocaleString()} and would like to discuss this further.`)}` 
+                        : "#contact"}
+                      target={whatsapp ? "_blank" : "_self"}
+                      rel={whatsapp ? "noopener noreferrer" : ""}
                     >
-                      Discuss with me
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full h-14 rounded-2xl border-white/20 bg-white/5 hover:bg-white hover:text-black font-bold text-white transition-all group"
+                      >
+                        Discuss with me
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </a>
                   </div>
 
                   <p className="text-[10px] text-zinc-500 text-center uppercase tracking-widest font-bold">

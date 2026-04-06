@@ -233,6 +233,7 @@ export default function AdminCoursesPage() {
                 size="sm"
                 className="flex-1 rounded-full"
                 onClick={() => handleOpenDialog(course)}
+                disabled={isLoading}
               >
                 <Pencil className="mr-2 h-3 w-3" /> Edit
               </Button>
@@ -241,6 +242,7 @@ export default function AdminCoursesPage() {
                 size="sm"
                 className="flex-1 rounded-full text-red-500 hover:bg-red-50 hover:text-red-600"
                 onClick={() => handleDelete(course.id)}
+                disabled={isLoading}
               >
                 <Trash2 className="mr-2 h-3 w-3" /> Delete
               </Button>

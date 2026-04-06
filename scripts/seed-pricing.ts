@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import Pricing from '../models/Pricing'
+import Plan from '../models/Plan'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -68,10 +68,10 @@ async function main() {
   console.log('Connected to MongoDB')
 
   // Clear existing pricing to avoid duplicates if re-running
-  await Pricing.deleteMany({})
+  await Plan.deleteMany({})
   console.log('Cleared existing pricing plans')
 
-  const createdPlans = await Pricing.insertMany(plans)
+  const createdPlans = await Plan.insertMany(plans)
   console.log(`Successfully seeded ${createdPlans.length} pricing plans!`)
 }
 

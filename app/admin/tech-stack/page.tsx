@@ -69,6 +69,7 @@ export default function AdminTechStackPage() {
   }
 
   const onSubmit = async (data: TechStackInput) => {
+    setIsLoading(true)
     try {
       const url = editingTech
         ? `/api/tech-stack/${editingTech.id}`
@@ -100,6 +101,8 @@ export default function AdminTechStackPage() {
         description: "Failed to save tech stack item",
         variant: "destructive",
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -116,6 +119,7 @@ export default function AdminTechStackPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this item?")) return
 
+    setIsLoading(true)
     try {
       const response = await fetch(`/api/tech-stack/${id}`, {
         method: "DELETE",
@@ -137,6 +141,8 @@ export default function AdminTechStackPage() {
         description: "Failed to delete tech stack item",
         variant: "destructive",
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -251,6 +257,7 @@ export default function AdminTechStackPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(tech)}
+                        disabled={isLoading}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -258,6 +265,7 @@ export default function AdminTechStackPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDelete(tech.id)}
+                        disabled={isLoading}
                       >
                         <Trash2 className="h-4 w-4 text-red-600" />
                       </Button>

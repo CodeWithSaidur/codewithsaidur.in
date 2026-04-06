@@ -72,13 +72,14 @@ export default function AdminLayout({
   }
 
   const navItems = [
-    { href: "/admin", label: "Dashboard" },
     { href: "/admin/profile", label: "Profile" },
+    { href: "/admin/plans-pricing", label: "Plans Pricing" },
+    { href: "/admin/service-costs", label: "Service Costs" },
+    { href: "/admin/feature-costs", label: "Feature Costs" },
+    { href: "/admin/projects", label: "Projects" },
+    { href: "/admin/courses", label: "Courses" },
     { href: "/admin/skills", label: "Skills" },
     { href: "/admin/tech-stack", label: "Tech Stack" },
-    { href: "/admin/projects", label: "Projects" },
-    { href: "/admin/pricing", label: "Pricing" },
-    { href: "/admin/courses", label: "Courses" },
     { href: "/admin/team-members", label: "Team Members" },
   ]
 
@@ -96,11 +97,10 @@ export default function AdminLayout({
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`rounded-lg px-3 py-2 text-sm font-semibold transition-all ${
-                      pathname === item.href
-                        ? "bg-blue-50 text-blue-600"
-                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                    }`}
+                    className={`rounded-lg px-3 py-2 text-sm font-semibold transition-all ${pathname === item.href
+                      ? "bg-blue-50 text-blue-600"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                      }`}
                   >
                     {item.label}
                   </Link>
@@ -127,11 +127,10 @@ export default function AdminLayout({
             <Link
               key={item.href}
               href={item.href}
-              className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
-                pathname === item.href
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-gray-500 hover:text-gray-900"
-              }`}
+              className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${pathname === item.href
+                ? "bg-white text-blue-600 shadow-sm"
+                : "text-gray-500 hover:text-gray-900"
+                }`}
             >
               {item.label}
             </Link>

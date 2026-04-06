@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
-export interface IPricing extends Document {
+export interface IPlan extends Document {
   name: string
   price: string
   description: string
@@ -12,7 +12,7 @@ export interface IPricing extends Document {
   updatedAt: Date
 }
 
-const PricingSchema = new Schema<IPricing>(
+const PlanSchema = new Schema<IPlan>(
   {
     name: { type: String, required: true },
     price: { type: String, required: true },
@@ -35,5 +35,5 @@ const PricingSchema = new Schema<IPricing>(
   }
 )
 
-export default mongoose.models.Pricing ||
-  mongoose.model<IPricing>('Pricing', PricingSchema)
+export default mongoose.models.Plan ||
+  mongoose.model<IPlan>('Plan', PlanSchema)

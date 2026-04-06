@@ -31,11 +31,6 @@ export default function Footer({ name = "Developer" }: FooterProps) {
 
   return (
     <footer className="w-full">
-
-
-
-
-
       {/* Basic Footer */}
       <div className="border-t border-gray-100 bg-white py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

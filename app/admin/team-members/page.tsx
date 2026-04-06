@@ -69,6 +69,7 @@ export default function AdminTeamMembersPage() {
   }
 
   const onSubmit = async (data: TeamMemberInput) => {
+    setIsLoading(true)
     try {
       const url = editingMember
         ? `/api/team-members/${editingMember.id}`
@@ -100,6 +101,8 @@ export default function AdminTeamMembersPage() {
         description: "Failed to save team member",
         variant: "destructive",
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -116,6 +119,7 @@ export default function AdminTeamMembersPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this team member?")) return
 
+    setIsLoading(true)
     try {
       const response = await fetch(`/api/team-members/${id}`, {
         method: "DELETE",
@@ -137,6 +141,8 @@ export default function AdminTeamMembersPage() {
         description: "Failed to delete member",
         variant: "destructive",
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -234,10 +240,10 @@ export default function AdminTeamMembersPage() {
                   <TableCell className="font-medium text-gray-600 italic">{member.designation}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(member)} className="h-9 w-9 rounded-lg hover:bg-white hover:shadow-md hover:text-blue-600">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(member)} disabled={isLoading} className="h-9 w-9 rounded-lg hover:bg-white hover:shadow-md hover:text-blue-600">
                         <Edit className="h-4.5 w-4.5" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(member.id)} className="h-9 w-9 rounded-lg hover:bg-white hover:shadow-md hover:text-red-500">
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(member.id)} disabled={isLoading} className="h-9 w-9 rounded-lg hover:bg-white hover:shadow-md hover:text-red-500">
                         <Trash2 className="h-4.5 w-4.5" />
                       </Button>
                     </div>

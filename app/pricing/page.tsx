@@ -39,7 +39,7 @@ export default function PricingPage() {
 
   useEffect(() => {
     // Fetch plans
-    fetch("/api/pricing")
+    fetch("/api/plans-pricing")
       .then(res => res.json())
       .then(data => {
         setPlans(data)

@@ -51,7 +51,7 @@ export default function AdminPricingPage() {
 
   const fetchPlans = async () => {
     try {
-      const response = await fetch("/api/pricing")
+      const response = await fetch("/api/plans-pricing")
       const data = await response.json()
       setPlans(data)
     } catch (error) {
@@ -120,7 +120,7 @@ export default function AdminPricingPage() {
     }
 
     try {
-      const url = editingPlan ? `/api/pricing/${editingPlan.id}` : "/api/pricing"
+      const url = editingPlan ? `/api/plans-pricing/${editingPlan.id}` : "/api/plans-pricing"
       const method = editingPlan ? "PUT" : "POST"
 
       const response = await fetch(url, {
@@ -155,7 +155,7 @@ export default function AdminPricingPage() {
 
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/pricing/${id}`, { method: "DELETE" })
+      const response = await fetch(`/api/plans-pricing/${id}`, { method: "DELETE" })
       if (response.ok) {
         toast({
           title: "Success",
@@ -180,7 +180,7 @@ export default function AdminPricingPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Pricing Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Plans Pricing Management</h1>
           <p className="text-gray-500">Manage your service packages and plans.</p>
         </div>
         <Button onClick={() => handleOpenDialog()} className="rounded-full">
@@ -230,6 +230,7 @@ export default function AdminPricingPage() {
                 size="sm"
                 className="flex-1 rounded-full"
                 onClick={() => handleOpenDialog(plan)}
+                disabled={isLoading}
               >
                 <Pencil className="mr-2 h-3 w-3" /> Edit
               </Button>
@@ -238,6 +239,7 @@ export default function AdminPricingPage() {
                 size="sm"
                 className="flex-1 rounded-full text-red-500 hover:bg-red-50 hover:text-red-600"
                 onClick={() => handleDelete(plan.id)}
+                disabled={isLoading}
               >
                 <Trash2 className="mr-2 h-3 w-3" /> Delete
               </Button>

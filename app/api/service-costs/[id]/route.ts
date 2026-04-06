@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
-import { pricingSchema } from '@/lib/validations'
-import Pricing from '@/models/Pricing'
+import { serviceCostSchema } from '@/lib/validations'
+import ServiceCost from '@/models/ServiceCost'
 
 export async function PUT(
   request: NextRequest,
@@ -17,27 +17,19 @@ export async function PUT(
     await connectDB()
     const { id } = await params
     const body = await request.json()
-    const validatedData = pricingSchema.parse(body)
+    const validatedData = serviceCostSchema.parse(body)
 
-    const plan = await Pricing.findByIdAndUpdate(
+    const cost = await ServiceCost.findByIdAndUpdate(
       id,
-      {
-        name: validatedData.name,
-        price: validatedData.price,
-        description: validatedData.description,
-        features: validatedData.features,
-        cta: validatedData.cta,
-        featured: validatedData.featured,
-        order: validatedData.order,
-      },
+      validatedData,
       { new: true }
     )
 
-    if (!plan) {
-      return NextResponse.json({ error: 'Plan not found' }, { status: 404 })
+    if (!cost) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
 
-    return NextResponse.json(JSON.parse(JSON.stringify(plan)))
+    return NextResponse.json(JSON.parse(JSON.stringify(cost)))
   } catch (error) {
     if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
@@ -64,13 +56,13 @@ export async function DELETE(
 
     await connectDB()
     const { id } = await params
-    const plan = await Pricing.findByIdAndDelete(id)
+    const cost = await ServiceCost.findByIdAndDelete(id)
 
-    if (!plan) {
-      return NextResponse.json({ error: 'Plan not found' }, { status: 404 })
+    if (!cost) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ message: 'Plan deleted successfully' })
+    return NextResponse.json({ message: 'Deleted successfully' })
   } catch (error) {
     return NextResponse.json(
       { error: 'Internal server error' },

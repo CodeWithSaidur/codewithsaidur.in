@@ -73,7 +73,7 @@ export const projectSchema = z.object({
   featured: z.boolean(),
 })
 
-export const pricingSchema = z.object({
+export const planSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   price: z.string().min(1, 'Price is required'),
   description: z.string().min(1, 'Description is required'),
@@ -99,11 +99,27 @@ export const teamMemberSchema = z.object({
   image: z.string().url().or(z.literal('')),
 })
 
+export const serviceCostSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  cost: z.number().min(0, 'Cost must be a positive number'),
+  type: z.enum(['fixed', 'usage']),
+  order: z.number().default(0),
+})
+
+export const featureCostSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  usdCost: z.string().min(1, 'USD cost range is required'),
+  inrCost: z.string().min(1, 'INR cost range is required'),
+  order: z.number().default(0),
+})
+
 export type LoginInput = z.infer<typeof loginSchema>
 export type ProfileInput = z.infer<typeof profileSchema>
 export type SkillInput = z.infer<typeof skillSchema>
 export type TechStackInput = z.infer<typeof techStackSchema>
 export type ProjectInput = z.infer<typeof projectSchema>
-export type PricingInput = z.infer<typeof pricingSchema>
+export type PlanInput = z.infer<typeof planSchema>
 export type CourseInput = z.infer<typeof courseSchema>
 export type TeamMemberInput = z.infer<typeof teamMemberSchema>
+export type ServiceCostInput = z.infer<typeof serviceCostSchema>
+export type FeatureCostInput = z.infer<typeof featureCostSchema>

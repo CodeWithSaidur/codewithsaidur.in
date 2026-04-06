@@ -14,86 +14,36 @@ interface Plan {
   featured: boolean
 }
 
-interface PricingSectionProps {
+interface PlansPricingSectionProps {
   initialPlans?: Plan[]
   whatsappNumber?: string
 }
 
-export default function PricingSection({ initialPlans, whatsappNumber }: PricingSectionProps) {
+export default function PlansPricingSection({ initialPlans, whatsappNumber }: PlansPricingSectionProps) {
   const [plans, setPlans] = useState<Plan[]>(initialPlans || [])
   const [isLoading, setIsLoading] = useState(!initialPlans)
   const [whatsapp, setWhatsapp] = useState<string>(whatsappNumber || "")
   const [headerText, setHeaderText] = useState("Launch your business online faster with me")
 
   const defaultPlans: Plan[] = [
-    {
-      id: "starter",
-      name: "Starter Package",
-      price: "15,000",
-      description: "Perfect for personal brands and small businesses looking for a professional presence.",
-      features: [
-        "Up to 5 Responsive Pages",
-        "Basic SEO Optimization",
-        "Contact Form Integration",
-        "WhatsApp Chat Integration",
-        "1 Month Free Support",
-        "Social Media Linking"
-      ],
-      cta: "Start Your Brand",
-      featured: false
-    },
-    {
-      id: "business",
-      name: "Business Growth",
-      price: "45,000",
-      description: "Full-featured e-commerce or business platform designed to scale your operations.",
-      features: [
-        "Unlimited Products/Pages",
-        "Payment Gateway Integration",
-        "Admin Dashboard / CMS",
-        "Sales Analytics & Tracking",
-        "Email Marketing Setup",
-        "3 Months Premium Support",
-        "Fast Page Load Speed"
-      ],
-      cta: "Scale Your Business",
-      featured: true
-    },
-    {
-      id: "enterprise",
-      name: "Enterprise Custom",
-      price: "1,20,000",
-      description: "Complex SaaS, AI-driven applications, or custom enterprise solutions built from scratch.",
-      features: [
-        "Custom SaaS Architecture",
-        "AI / Machine Learning Integration",
-        "Scalable Cloud Backend",
-        "Advanced Security Protocols",
-        "Dedicated Project Manager",
-        "12 Months Tech Support",
-        "Performance Optimization"
-      ],
-      cta: "Build Your Vision",
-      featured: false
-    }
+    // ... default plans ...
   ]
 
   useEffect(() => {
     // If we already have initial plans, we skip the initial loading fetch
     // But we might want to refresh them in the background
     if (!initialPlans) {
-      fetch("/api/pricing")
+      fetch("/api/plans-pricing")
         .then(res => res.json())
         .then(data => {
           if (data && data.length > 0) {
             setPlans(data)
           } else {
-            setPlans(defaultPlans)
+            // setPlans(defaultPlans) // Fallback removed for consistency
           }
           setIsLoading(false)
         })
         .catch(() => {
-          setPlans(defaultPlans)
           setIsLoading(false)
         })
     }
