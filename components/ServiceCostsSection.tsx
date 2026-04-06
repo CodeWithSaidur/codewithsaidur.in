@@ -156,15 +156,18 @@ export default function ServiceCostsSection({ whatsappNumber }: ServiceCostsSect
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="space-y-1">
                     <label className="text-sm font-bold text-black uppercase tracking-wider">Projected Monthly Users</label>
-                    <p className="text-xs text-zinc-500 font-medium">Costs will scale based on this number (min 1,000)</p>
+                    <p className="text-xs text-zinc-500 font-medium">Costs will scale based on this number (1,000 to 5,000)</p>
                   </div>
                   <div className="relative w-full sm:w-48">
                     <Input
                       type="number"
+                      min={1000}
+                      max={5000}
                       value={expectedUsers}
-                      onChange={(e) => setExpectedUsers(parseInt(e.target.value) || 0)}
+                      onChange={(e) => setExpectedUsers(parseInt(e.target.value) || 1)}
                       onBlur={() => {
                         if (expectedUsers < 1000) setExpectedUsers(1000)
+                        if (expectedUsers > 5000) setExpectedUsers(5000)
                       }}
                       className="bg-white border-zinc-200 rounded-2xl font-bold text-center h-12 focus:border-black transition-all"
                     />
@@ -207,44 +210,44 @@ export default function ServiceCostsSection({ whatsappNumber }: ServiceCostsSect
                 ))
               ) : (
                 services.map((service, index) => {
-                const currentCost = getServiceCost(service)
-                return (
-                  <div
-                    key={index}
-                    onClick={() => toggleService(index)}
-                    className={`cursor-pointer group flex items-center justify-between rounded-2xl border p-4 transition-all ${selectedServices.includes(index)
-                      ? "border-black bg-black text-white shadow-lg scale-[1.02]"
-                      : "border-zinc-100 bg-zinc-50 hover:border-black hover:bg-white"
-                      }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`flex h-5 w-5 items-center justify-center rounded-md border transition-colors ${selectedServices.includes(index)
-                        ? "border-white bg-white text-black"
-                        : "border-zinc-300 bg-white group-hover:border-black"
-                        }`}>
-                        {selectedServices.includes(index) && <CheckCircle2 className="h-3.5 w-3.5" />}
+                  const currentCost = getServiceCost(service)
+                  return (
+                    <div
+                      key={index}
+                      onClick={() => toggleService(index)}
+                      className={`cursor-pointer group flex items-center justify-between rounded-2xl border p-4 transition-all ${selectedServices.includes(index)
+                        ? "border-black bg-black text-white shadow-lg scale-[1.02]"
+                        : "border-zinc-100 bg-zinc-50 hover:border-black hover:bg-white"
+                        }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`flex h-5 w-5 items-center justify-center rounded-md border transition-colors ${selectedServices.includes(index)
+                          ? "border-white bg-white text-black"
+                          : "border-zinc-300 bg-white group-hover:border-black"
+                          }`}>
+                          {selectedServices.includes(index) && <CheckCircle2 className="h-3.5 w-3.5" />}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold">{service.name}</span>
+                          {service.type === "usage" && (
+                            <span className={`text-[9px] font-bold uppercase tracking-tight ${selectedServices.includes(index) ? "text-zinc-400" : "text-zinc-500"}`}>
+                              Usage Based
+                            </span>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold">{service.name}</span>
-                        {service.type === "usage" && (
-                          <span className={`text-[9px] font-bold uppercase tracking-tight ${selectedServices.includes(index) ? "text-zinc-400" : "text-zinc-500"}`}>
-                            Usage Based
-                          </span>
-                        )}
+                      <div className="text-right">
+                        <div className={`text-sm font-bold ${selectedServices.includes(index) ? "text-white" : "text-black"
+                          }`}>
+                          ₹{currentCost.toLocaleString()}
+                        </div>
+                        <div className={`text-[10px] font-medium uppercase opacity-60`}>
+                          per year
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className={`text-sm font-bold ${selectedServices.includes(index) ? "text-white" : "text-black"
-                        }`}>
-                        ₹{currentCost.toLocaleString()}
-                      </div>
-                      <div className={`text-[10px] font-medium uppercase opacity-60`}>
-                        per year
-                      </div>
-                    </div>
-                  </div>
-                )
-              }))}
+                  )
+                }))}
             </div>
           </div>
 
@@ -298,8 +301,8 @@ export default function ServiceCostsSection({ whatsappNumber }: ServiceCostsSect
 
                   <div className="pt-6">
                     <a
-                      href={whatsapp 
-                        ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hi, I've calculated an estimated annual infrastructure cost of ₹${total.toLocaleString()} and would like to discuss this further.`)}` 
+                      href={whatsapp
+                        ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hi, I've calculated an estimated annual infrastructure cost of ₹${total.toLocaleString()} and would like to discuss this further.`)}`
                         : "#contact"}
                       target={whatsapp ? "_blank" : "_self"}
                       rel={whatsapp ? "noopener noreferrer" : ""}

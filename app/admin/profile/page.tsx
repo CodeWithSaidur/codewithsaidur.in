@@ -37,7 +37,7 @@ export default function AdminProfilePage() {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<ProfileInput>({
     resolver: zodResolver(profileSchema),
   })
@@ -47,9 +47,13 @@ export default function AdminProfilePage() {
   }, [])
 
   useEffect(() => {
-    registerSaveAction(() => handleSubmit(onSubmit)())
+    if (isDirty) {
+      registerSaveAction(() => handleSubmit(onSubmit)())
+    } else {
+      registerSaveAction(null)
+    }
     return () => registerSaveAction(null)
-  }, [registerSaveAction, handleSubmit])
+  }, [isDirty, registerSaveAction, handleSubmit])
 
   const fetchProfile = async () => {
     try {
@@ -112,6 +116,18 @@ export default function AdminProfilePage() {
 
       const updatedProfile = result
       setProfile(updatedProfile)
+      reset({
+        name: updatedProfile.name,
+        bio: updatedProfile.bio,
+        avatar: updatedProfile.avatar || "",
+        github: updatedProfile.github || "",
+        linkedin: updatedProfile.linkedin || "",
+        twitter: updatedProfile.twitter || "",
+        website: updatedProfile.website || "",
+        email: updatedProfile.email || "",
+        whatsapp: updatedProfile.whatsapp || "",
+        phone: updatedProfile.phone || "",
+      })
 
       toast({
         title: "Success",

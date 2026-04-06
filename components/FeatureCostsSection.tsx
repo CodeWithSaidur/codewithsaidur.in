@@ -1,9 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Check, Info, DollarSign, ArrowRight } from "lucide-react"
+import { CheckCircle2, Calculator, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
 
 interface FeatureCost {
   id: string
@@ -17,7 +16,8 @@ interface FeatureCostsSectionProps {
 }
 
 export default function FeatureCostsSection({ whatsappNumber }: FeatureCostsSectionProps) {
-  const [pricingData, setPricingData] = useState<FeatureCost[]>([])
+  const [features, setFeatures] = useState<FeatureCost[]>([])
+  const [selectedFeatures, setSelectedFeatures] = useState<number[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [whatsapp, setWhatsapp] = useState(whatsappNumber || "")
 
@@ -38,115 +38,175 @@ export default function FeatureCostsSection({ whatsappNumber }: FeatureCostsSect
       .then(res => res.json())
       .then(data => {
         if (data && Array.isArray(data)) {
-          setPricingData(data)
+          setFeatures(data)
         }
       })
       .catch(err => console.error("Error fetching feature costs:", err))
       .finally(() => setIsLoading(false))
   }, [])
 
+  const parseCost = (costStr: string) => {
+    const num = parseInt(costStr.replace(/[^0-9]/g, ""))
+    return isNaN(num) ? 0 : num
+  }
+
+  const toggleFeature = (index: number) => {
+    setSelectedFeatures(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    )
+  }
+
+  const calculateTotal = () => {
+    return selectedFeatures.reduce((acc, index) => {
+      return acc + parseCost(features[index].inrCost)
+    }, 0)
+  }
+
+  const total = calculateTotal()
+
   return (
     <section id="dev-pricing" className="relative overflow-hidden py-24 bg-zinc-50/50">
-      {/* Background Ornaments */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-black/[0.03] rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-black/[0.03] rounded-full blur-3xl animate-pulse delay-700" />
-      </div>
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-1/3 h-full bg-white -skew-x-12 -translate-x-1/2" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-black mb-4 px-4">
-            Development Team Plans Pricing
-          </h2>
-          <h3 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-5xl px-4">
-            Feature-wise project investment
-          </h3>
-          <p className="mt-4 max-w-2xl mx-auto text-gray-600 text-lg font-medium px-4 leading-relaxed">
-            Based on the features you choose, we will provide you with the total investment required for your project.
-          </p>
+        <div className="mb-16 text-center lg:text-left lg:flex lg:items-end lg:justify-between">
+          <div className="lg:max-w-2xl">
+            <h2 className="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-4 px-4 lg:px-0">
+              Feature-wise Project Investment
+            </h2>
+            <h3 className="text-3xl font-extrabold tracking-tight text-black sm:text-5xl px-4 lg:px-0">
+              Build your custom project
+            </h3>
+          </div>
+          <div className="mt-8 lg:mt-0 px-4 lg:px-0">
+            <p className="text-zinc-600 font-medium max-w-md">
+              Select the features and modules you need to get an instant estimate of your total project investment.
+            </p>
+          </div>
         </div>
 
-        <div className="rounded-3xl border border-zinc-200 bg-white shadow-2xl shadow-black/5 overflow-hidden">
-          {/* Header - Desktop Only */}
-          <div className="hidden md:grid md:grid-cols-12 bg-gradient-to-r from-black via-zinc-900 to-black text-white px-6 py-5">
-            <div className="col-span-6 text-sm font-bold uppercase tracking-wider">Feature / Module</div>
-            <div className="col-span-3 text-sm font-bold uppercase tracking-wider text-center">Price (USD)</div>
-            <div className="col-span-3 text-sm font-bold uppercase tracking-wider text-center">Price (INR)</div>
-          </div>
-
-          <div className="divide-y divide-gray-100">
-            {isLoading ? (
-              [1, 2, 3, 4, 5].map(i => (
-                <div key={i} className="animate-pulse bg-zinc-50 p-6 md:grid md:grid-cols-12">
-                  <div className="col-span-6 flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-zinc-200" />
-                    <div className="h-4 w-48 rounded bg-zinc-200" />
-                  </div>
-                  <div className="col-span-3 h-4 w-24 rounded bg-zinc-200 mx-auto hidden md:block" />
-                  <div className="col-span-3 h-8 w-32 rounded-full bg-zinc-200 ml-auto hidden md:block" />
-                </div>
-              ))
-            ) : (
-              pricingData.map((item, index) => (
-                <div
-                  key={index}
-                  className="group p-6 md:px-6 md:py-5 transition-all hover:bg-zinc-50/80 md:grid md:grid-cols-12 md:items-center"
-                >
-                  {/* Role Column */}
-                  <div className="col-span-6 mb-4 md:mb-0">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-black text-white font-bold text-xs transition-transform group-hover:scale-110">
-                        {index + 1}
+        <div className="grid gap-12 lg:grid-cols-12">
+          {/* Left Column: Feature Selection */}
+          <div className="lg:col-span-7 space-y-8">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {isLoading ? (
+                [1, 2, 3, 4, 5, 6].map(i => (
+                  <div key={i} className="h-28 animate-pulse rounded-2xl bg-zinc-200/60" />
+                ))
+              ) : (
+                features.map((feature, index) => {
+                  const isSelected = selectedFeatures.includes(index)
+                  return (
+                    <div
+                      key={index}
+                      onClick={() => toggleFeature(index)}
+                      className={`cursor-pointer group flex flex-col justify-between rounded-2xl border p-5 transition-all ${isSelected
+                        ? "border-black bg-black text-white shadow-lg scale-[1.02]"
+                        : "border-zinc-200 bg-white hover:border-black hover:shadow-md"
+                        }`}
+                    >
+                      <div className="flex items-start gap-3 mb-4">
+                        <div className={`flex mt-0.5 h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors ${isSelected
+                          ? "border-white bg-white text-black"
+                          : "border-zinc-300 bg-white group-hover:border-black"
+                          }`}>
+                          {isSelected && <CheckCircle2 className="h-3.5 w-3.5" />}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold leading-snug">{feature.name}</span>
+                        </div>
                       </div>
-                      <span className="text-base md:text-sm font-bold text-gray-900 transition-colors group-hover:text-black leading-tight">
-                        {item.name}
-                      </span>
+                      <div className="text-left ml-8 mt-auto">
+                        <div className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-bold tracking-wide ${isSelected ? "bg-white/20 text-white border border-white/10" : "bg-zinc-100 text-zinc-900 border border-zinc-200"
+                          }`}>
+                          ₹{feature.inrCost}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* USD Column */}
-                  <div className="col-span-3 mb-4 md:mb-0 md:text-center">
-                    <div className="flex flex-col">
-                      <span className="text-sm font-bold text-gray-900 flex items-center gap-1.5 md:justify-center">
-                        <DollarSign className="w-3.5 h-3.5 text-zinc-600" />
-                        {item.usdCost}
-                      </span>
-                      <span className="text-[10px] font-bold text-gray-400 flex items-center gap-1 uppercase tracking-tighter md:justify-center">
-                        Estimated Project Cost
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* INR Column */}
-                  <div className="col-span-3 text-left md:text-right">
-                    <span className="inline-flex items-center rounded-full bg-zinc-100 px-4 py-1.5 text-sm font-bold text-zinc-900 ring-1 ring-inset ring-black/10 group-hover:bg-black group-hover:text-white transition-all transform group-hover:scale-105">
-                      {item.inrCost}
-                    </span>
-                  </div>
-                </div>
-              ))
-            )}
+                  )
+                })
+              )}
+            </div>
+            
+            <div className="mt-8 text-center sm:text-left bg-white p-6 rounded-2xl border border-dashed border-zinc-200">
+              <p className="text-xs text-zinc-500 font-medium">
+                Prices are estimates and may vary based on specific business logic, tech stack, and overall complexity.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="mt-12 text-center p-8 rounded-3xl border-2 border-dashed border-zinc-200 bg-zinc-50/50">
-          <p className="text-gray-600 font-medium mb-6">
-            Prices are estimates and may vary based on complexity, technology stack, and specific business logic.
-          </p>
-          <a
-            href={whatsapp
-              ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hi, I'm interested in getting a custom project quote. I've been looking at the feature-wise investment chart on your website.`)}`
-              : "#contact"}
-            target={whatsapp ? "_blank" : "_self"}
-            rel={whatsapp ? "noopener noreferrer" : ""}
-          >
-            <Button
-              className="rounded-full bg-black hover:bg-zinc-800 text-white px-8 py-6 text-sm font-bold shadow-xl transition-all hover:scale-105 active:scale-95"
-            >
-              Get a Custom Quote
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </a>
+          {/* Right Column: Calculator Summary */}
+          <div className="lg:col-span-5">
+            <div className="sticky top-8 rounded-3xl border border-black bg-black p-8 text-white shadow-2xl shadow-black/20 overflow-hidden">
+              {/* Abstract pattern */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl pointer-events-none" />
+
+              <div className="relative">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
+                    <Calculator className="h-5 w-5" />
+                  </div>
+                  <h4 className="text-xl font-bold">Estimated Investment</h4>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="flex items-baseline justify-between border-b border-white/10 pb-6">
+                    <span className="text-zinc-400 font-medium">Project Total</span>
+                    <div className="text-right">
+                      <span className="text-4xl font-extrabold tracking-tighter">
+                        ₹{total.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                    {selectedFeatures.length === 0 ? (
+                      <p className="text-sm text-zinc-500 italic">No features selected. Click on modules to customize your project estimate.</p>
+                    ) : (
+                      selectedFeatures.map(index => {
+                        const feature = features[index]
+                        return (
+                          <div key={index} className="flex flex-col group py-1 border-b border-white/5 last:border-0">
+                            <span className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors mb-1">
+                              {feature.name}
+                            </span>
+                            <span className="text-sm font-bold text-white">
+                              ₹{feature.inrCost}
+                            </span>
+                          </div>
+                        )
+                      })
+                    )}
+                  </div>
+
+                  <div className="pt-6 border-t border-white/10">
+                    <a
+                      href={whatsapp
+                        ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hi, I've calculated an estimated project investment of ₹${total.toLocaleString()} using the feature builder and would like to get a finalized custom quote.`)}`
+                        : "#contact"}
+                      target={whatsapp ? "_blank" : "_self"}
+                      rel={whatsapp ? "noopener noreferrer" : ""}
+                    >
+                      <Button
+                        variant="outline"
+                        className="w-full h-14 rounded-2xl border-white/20 bg-white/5 hover:bg-white hover:text-black font-bold text-white transition-all group"
+                      >
+                        Request Final Quote
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </a>
+                  </div>
+
+                  <p className="text-[10px] text-zinc-500 text-center uppercase tracking-widest font-bold">
+                    One-time development cost
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

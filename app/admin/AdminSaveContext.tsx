@@ -7,6 +7,7 @@ interface AdminSaveContextType {
   triggerSave: () => Promise<void>
   isSaving: boolean
   setIsSaving: (loading: boolean) => void
+  hasSaveAction: boolean
 }
 
 const AdminSaveContext = createContext<AdminSaveContextType | undefined>(undefined)
@@ -37,6 +38,7 @@ export function AdminSaveProvider({ children }: { children: React.ReactNode }) {
         triggerSave,
         isSaving,
         setIsSaving,
+        hasSaveAction: saveAction !== null,
       }}
     >
       {children}

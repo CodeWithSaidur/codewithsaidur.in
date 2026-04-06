@@ -6,11 +6,12 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import { AdminSaveProvider, useAdminSave } from "./AdminSaveContext"
-import { Check } from "lucide-react"
+import { Check, ExternalLink } from "lucide-react"
 
-function SaveButton() {
-  const { triggerSave, isSaving } = useAdminSave()
+function SmartActionButton() {
+  const { triggerSave, isSaving, hasSaveAction } = useAdminSave()
   const [showSuccess, setShowSuccess] = useState(false)
+  const router = useRouter()
 
   const handleSave = async () => {
     try {
@@ -18,20 +19,33 @@ function SaveButton() {
       setShowSuccess(true)
       setTimeout(() => setShowSuccess(false), 2000)
     } catch (error) {
-       // Error handled by page's toast
+      // Error handled by page's toast
     }
+  }
+
+  if (!hasSaveAction && !showSuccess) {
+    return (
+      <Button
+        variant="outline"
+        className="rounded-full border-gray-200 flex items-center gap-2"
+        onClick={() => window.open("/", "_blank")}
+      >
+        <ExternalLink className="h-4 w-4" />
+        Site Preview
+      </Button>
+    )
   }
 
   return (
     <Button
-      variant="gradient"
-      className="rounded-full px-6 font-bold shadow-lg shadow-blue-100 transition-all hover:scale-105 active:scale-95 flex items-center gap-2"
+      variant="outline"
+      className="rounded-full border-gray-200 px-6 font-bold transition-all hover:scale-105 active:scale-95 flex items-center gap-2"
       onClick={handleSave}
       disabled={isSaving}
     >
       {isSaving ? (
         <>
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-400 border-t-transparent" />
           Saving...
         </>
       ) : showSuccess ? (
@@ -113,14 +127,14 @@ function AdminLayoutContent({
 
   const navItems = [
     { href: "/admin/profile", label: "Profile" },
-    { href: "/admin/plans-pricing", label: "Plans Pricing" },
-    { href: "/admin/service-costs", label: "Service Costs" },
-    { href: "/admin/feature-costs", label: "Feature Costs" },
+    { href: "/admin/plans-pricing", label: "Plans" },
+    { href: "/admin/service-costs", label: "Services" },
+    { href: "/admin/feature-costs", label: "Features" },
     { href: "/admin/projects", label: "Projects" },
     { href: "/admin/courses", label: "Courses" },
     { href: "/admin/skills", label: "Skills" },
     { href: "/admin/tech-stack", label: "Tech Stack" },
-    { href: "/admin/team-members", label: "Team Members" },
+    { href: "/admin/team-members", label: "Team" },
   ]
 
   return (
@@ -129,9 +143,6 @@ function AdminLayoutContent({
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center space-x-8">
-              <h1 className="bg-clip-text text-xl font-extrabold text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                Admin Panel
-              </h1>
               <div className="hidden md:flex space-x-1">
                 {navItems.map((item) => (
                   <Link
@@ -148,12 +159,7 @@ function AdminLayoutContent({
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <Link href="/" target="_blank">
-                <Button variant="outline" className="rounded-full border-gray-200">
-                  Site Preview
-                </Button>
-              </Link>
-              <SaveButton />
+              <SmartActionButton />
               <Button variant="ghost" className="rounded-full text-red-500 hover:bg-red-50 hover:text-red-600" onClick={handleLogout}>
                 Logout
               </Button>
