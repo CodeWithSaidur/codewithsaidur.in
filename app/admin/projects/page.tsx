@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/table"
 import { useToast } from "@/components/ui/use-toast"
 import { Plus, Trash2, Edit } from "lucide-react"
+import { useAdminSave } from "../AdminSaveContext"
 
 type Project = {
   id: string
@@ -60,6 +61,17 @@ export default function AdminProjectsPage() {
       featured: false,
     },
   })
+
+  const { registerSaveAction } = useAdminSave()
+
+  useEffect(() => {
+    if (isDialogOpen) {
+      registerSaveAction(() => handleSubmit(onSubmit)())
+    } else {
+      registerSaveAction(null)
+    }
+    return () => registerSaveAction(null)
+  }, [isDialogOpen, registerSaveAction, handleSubmit])
 
   const techStack = watch("techStack")
   const featured = watch("featured")

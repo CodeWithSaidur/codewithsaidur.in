@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
 import { skillSchema } from '@/lib/validations'
@@ -33,6 +34,9 @@ export async function PUT(
       return NextResponse.json({ error: 'Skill not found' }, { status: 404 })
     }
 
+    revalidatePath('/')
+    revalidatePath('/projects')
+
     return NextResponse.json(JSON.parse(JSON.stringify(skill)))
   } catch (error) {
     if (error instanceof Error && error.name === 'ZodError') {
@@ -61,6 +65,9 @@ export async function DELETE(
     await connectDB()
     const { id } = await params
     await Skill.findByIdAndDelete(id)
+
+    revalidatePath('/')
+    revalidatePath('/projects')
 
     return NextResponse.json({ success: true })
   } catch (error) {

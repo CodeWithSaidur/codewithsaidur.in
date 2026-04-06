@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
 import { serviceCostSchema } from '@/lib/validations'
@@ -29,6 +30,9 @@ export async function POST(request: NextRequest) {
     const validatedData = serviceCostSchema.parse(body)
 
     const cost = await ServiceCost.create(validatedData)
+
+    revalidatePath('/')
+    revalidatePath('/projects')
 
     return NextResponse.json(JSON.parse(JSON.stringify(cost)))
   } catch (error) {

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
 import { planSchema } from '@/lib/validations'
@@ -37,6 +38,9 @@ export async function PUT(
       return NextResponse.json({ error: 'Plan not found' }, { status: 404 })
     }
 
+    revalidatePath('/')
+    revalidatePath('/projects')
+
     return NextResponse.json(JSON.parse(JSON.stringify(plan)))
   } catch (error) {
     if (error instanceof Error && error.name === 'ZodError') {
@@ -69,6 +73,9 @@ export async function DELETE(
     if (!plan) {
       return NextResponse.json({ error: 'Plan not found' }, { status: 404 })
     }
+
+    revalidatePath('/')
+    revalidatePath('/projects')
 
     return NextResponse.json({ message: 'Plan deleted successfully' })
   } catch (error) {

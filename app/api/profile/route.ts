@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
 import { profileSchema } from '@/lib/validations'
@@ -50,6 +51,9 @@ export async function POST(request: NextRequest) {
       ? await Profile.findByIdAndUpdate(existingProfile._id, cleanData, { new: true })
       : await Profile.create(cleanData)
 
+    revalidatePath('/')
+    revalidatePath('/projects')
+    
     return NextResponse.json(JSON.parse(JSON.stringify(profile)))
   } catch (error: any) {
     if (error?.name === 'ZodError' || error?.issues) {

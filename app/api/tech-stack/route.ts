@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
 import { techStackSchema } from '@/lib/validations'
@@ -33,6 +34,9 @@ export async function POST(request: NextRequest) {
       category: validatedData.category,
       icon: validatedData.icon || null,
     })
+
+    revalidatePath('/')
+    revalidatePath('/projects')
 
     return NextResponse.json(JSON.parse(JSON.stringify(tech)))
   } catch (error) {

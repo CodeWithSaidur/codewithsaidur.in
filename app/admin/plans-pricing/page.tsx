@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { useToast } from "@/components/ui/use-toast"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useAdminSave } from "../AdminSaveContext"
 
 interface Plan {
   id: string
@@ -44,10 +45,23 @@ export default function AdminPricingPage() {
   const [order, setOrder] = useState(0)
 
   const { toast } = useToast()
+  const { registerSaveAction } = useAdminSave()
 
   useEffect(() => {
     fetchPlans()
   }, [])
+
+  useEffect(() => {
+    if (isDialogOpen) {
+      registerSaveAction(async () => {
+        const element = document.getElementById("plans-pricing-form") as HTMLFormElement
+        if (element) element.requestSubmit()
+      })
+    } else {
+      registerSaveAction(null)
+    }
+    return () => registerSaveAction(null)
+  }, [isDialogOpen, registerSaveAction])
 
   const fetchPlans = async () => {
     try {
@@ -253,7 +267,7 @@ export default function AdminPricingPage() {
           <DialogHeader>
             <DialogTitle>{editingPlan ? "Edit Plan" : "Create New Plan"}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-6 pt-4">
+          <form id="plans-pricing-form" onSubmit={handleSubmit} className="space-y-6 pt-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">Plan Name</Label>

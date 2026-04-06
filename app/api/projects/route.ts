@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import connectDB from '@/lib/mongoose'
 import { getAdminFromRequest } from '@/lib/auth'
 import { projectSchema } from '@/lib/validations'
@@ -37,6 +38,9 @@ export async function POST(request: NextRequest) {
       techStack: validatedData.techStack,
       featured: validatedData.featured,
     })
+
+    revalidatePath('/')
+    revalidatePath('/projects')
 
     return NextResponse.json(JSON.parse(JSON.stringify(project)))
   } catch (error) {

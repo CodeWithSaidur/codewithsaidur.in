@@ -5,8 +5,48 @@ import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
+import { AdminSaveProvider, useAdminSave } from "./AdminSaveContext"
+import { Check } from "lucide-react"
 
-export default function AdminLayout({
+function SaveButton() {
+  const { triggerSave, isSaving } = useAdminSave()
+  const [showSuccess, setShowSuccess] = useState(false)
+
+  const handleSave = async () => {
+    try {
+      await triggerSave()
+      setShowSuccess(true)
+      setTimeout(() => setShowSuccess(false), 2000)
+    } catch (error) {
+       // Error handled by page's toast
+    }
+  }
+
+  return (
+    <Button
+      variant="gradient"
+      className="rounded-full px-6 font-bold shadow-lg shadow-blue-100 transition-all hover:scale-105 active:scale-95 flex items-center gap-2"
+      onClick={handleSave}
+      disabled={isSaving}
+    >
+      {isSaving ? (
+        <>
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          Saving...
+        </>
+      ) : showSuccess ? (
+        <>
+          <Check className="h-4 w-4" />
+          Saved!
+        </>
+      ) : (
+        "Save Changes"
+      )}
+    </Button>
+  )
+}
+
+function AdminLayoutContent({
   children,
 }: {
   children: React.ReactNode
@@ -113,6 +153,7 @@ export default function AdminLayout({
                   Site Preview
                 </Button>
               </Link>
+              <SaveButton />
               <Button variant="ghost" className="rounded-full text-red-500 hover:bg-red-50 hover:text-red-600" onClick={handleLogout}>
                 Logout
               </Button>
@@ -144,3 +185,16 @@ export default function AdminLayout({
     </div>
   )
 }
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <AdminSaveProvider>
+      <AdminLayoutContent>{children}</AdminLayoutContent>
+    </AdminSaveProvider>
+  )
+}
+

@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useAdminSave } from "../AdminSaveContext"
 
 interface ServiceCost {
   id: string
@@ -42,10 +43,24 @@ export default function AdminServiceCostsPage() {
   const [order, setOrder] = useState(0)
 
   const { toast } = useToast()
+  const { registerSaveAction } = useAdminSave()
 
   useEffect(() => {
     fetchCosts()
   }, [])
+
+  useEffect(() => {
+    if (isDialogOpen) {
+      registerSaveAction(async () => {
+        // Trigger manual form submission since it's not a hook-form
+        const element = document.getElementById("service-cost-form") as HTMLFormElement
+        if (element) element.requestSubmit()
+      })
+    } else {
+      registerSaveAction(null)
+    }
+    return () => registerSaveAction(null)
+  }, [isDialogOpen, registerSaveAction])
 
   const fetchCosts = async () => {
     try {
@@ -206,7 +221,7 @@ export default function AdminServiceCostsPage() {
           <DialogHeader>
             <DialogTitle>{editingCost ? "Edit Service Cost" : "Add New Service Cost"}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-6 pt-4">
+          <form id="service-cost-form" onSubmit={handleSubmit} className="space-y-6 pt-4">
             <div className="space-y-2">
               <Label htmlFor="name">Service Name</Label>
               <Input

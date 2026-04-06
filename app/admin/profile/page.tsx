@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
+import { useAdminSave } from "../AdminSaveContext"
 
 type Profile = {
   id: string
@@ -30,6 +31,8 @@ export default function AdminProfilePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
 
+  const { registerSaveAction } = useAdminSave()
+
   const {
     register,
     handleSubmit,
@@ -42,6 +45,11 @@ export default function AdminProfilePage() {
   useEffect(() => {
     fetchProfile()
   }, [])
+
+  useEffect(() => {
+    registerSaveAction(() => handleSubmit(onSubmit)())
+    return () => registerSaveAction(null)
+  }, [registerSaveAction, handleSubmit])
 
   const fetchProfile = async () => {
     try {
